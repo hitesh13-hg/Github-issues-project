@@ -7,15 +7,15 @@ import { defineMessages } from 'react-intl';
 
 export default defineMessages({
   username: {
-    id: 'reon.modules.Login.components.LoginForm.input.username',
+    id: 'app.components.LoginForm.input.username',
     defaultMessage: 'Username or Email',
   },
   password: {
-    id: 'reon.modules.Login.components.LoginForm.input.password',
+    id: 'app.components.LoginForm.input.password',
     defaultMessage: 'Password',
   },
   loginButton: {
-    id: 'reon.modules.Login.components.LoginForm.input.loginButton',
+    id: 'app.components.LoginForm.input.loginButton',
     defaultMessage: 'Login',
   },
 });

@@ -4,7 +4,8 @@
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper'
-import { makeSelectCap } from '../containers/Cap/selectors';
+import { makeSelectUser, makeSelectUserLoading } from '../containers/Cap/selectors';
+import Loading from '../components/Loading'
 const orginUrl = window.location.origin;
 
 const getIsLoggedIn = () => {
@@ -19,22 +20,58 @@ const getIsLoggedIn = () => {
   }
   return isLoggedIn;
 };
-const locationHelper = locationHelperBuilder({})
+const locationHelper = locationHelperBuilder({});
 
-// Take the regular authentication & redirect to login from before
-export const UserIsAuthenticated = connectedRouterRedirect({
-  authenticatedSelector: makeSelectCap(),
-  // authenticatingSelector: makeSelectUserLoading(),
-  allowRedirectBack: false,
-  predicate: () => getIsLoggedIn(),
+const userIsAuthenticatedDefaults = {
+  authenticatedSelector: makeSelectUser(),
   wrapperDisplayName: 'UserIsAuthenticated',
-  redirectPath: `${orginUrl}/login`,
+}
+
+export const userIsAuthenticated = connectedAuthWrapper(
+  userIsAuthenticatedDefaults
+);
+
+export const userIsAuthenticatedRedir = connectedRouterRedirect({
+  ...userIsAuthenticatedDefaults,
+  AuthenticatingComponent: Loading,
+  redirectPath: '/login',
+  // redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/campaigns',
 });
 
-export const UserIsNotAuthenticated = connectedRouterRedirect({
-  authenticatedSelector: makeSelectCap(),//makeSelectCap(),
+
+
+const userIsNotAuthenticatedDefaults = {
+  // Want to redirect the user when they are done loading and authenticated
+  authenticatedSelector: makeSelectUser(),
   wrapperDisplayName: 'UserIsNotAuthenticated',
-  predicate: () => !getIsLoggedIn(),
+};
+
+export const userIsNotAuthenticated = connectedAuthWrapper(
+  userIsNotAuthenticatedDefaults
+);
+
+export const userIsNotAuthenticatedRedir = connectedRouterRedirect({
+  ...userIsNotAuthenticatedDefaults,
+  // redirectPath: '/login',
   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/campaigns',
   allowRedirectBack: false,
+  predicate: (acv) => {debugger},
 });
+
+// Take the regular authentication & redirect to login from before
+// export const UserIsAuthenticated = connectedRouterRedirect({
+//   authenticatedSelector: makeSelectUser(),
+//   authenticatingSelector: makeSelectUserLoading(),
+//   allowRedirectBack: false,
+//   predicate: () => getIsLoggedIn(),
+//   wrapperDisplayName: 'UserIsAuthenticated',
+//   redirectPath: `${orginUrl}/login`,
+// });
+//
+// export const UserIsNotAuthenticated = connectedRouterRedirect({
+//   authenticatedSelector: makeSelectUser(),//makeSelectCap(),
+//   wrapperDisplayName: 'UserIsNotAuthenticated',
+//   predicate: () => !getIsLoggedIn(),
+//   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/campaigns',
+//   allowRedirectBack: false,
+// });

@@ -10,6 +10,7 @@ import pathConfig from '../../config/path';
 
 function* authorize(user) {
   try {
+    debugger
     const res = yield call(Api.authorize, user);
     yield call(LocalStorage.saveItem, 'token', res.token);
     yield call(LocalStorage.saveItem, 'orgID', res.user.orgID);
@@ -39,6 +40,7 @@ function* switchOrg({orgID}) {
 function* loginFlow() {
   const condition = true;
   while (condition) {
+    debugger
     const { user } = yield take(types.LOGIN_REQUEST);
     const task = yield fork(authorize, user);
     const action = yield take([types.LOGOUT_REQUEST, types.LOGIN_FAILURE]);

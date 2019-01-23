@@ -16,18 +16,18 @@ import NotFoundPage from '../NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
 import {
-  UserIsAuthenticated,
-  UserIsNotAuthenticated,
+  userIsAuthenticatedRedir,
+  userIsNotAuthenticatedRedir,
 } from '../../utils/authWrapper';
 
 export default function App() {
-  const LoginComp = UserIsNotAuthenticated(Login);
-  const Protected = UserIsAuthenticated(Cap);
+  const LoginComp = userIsNotAuthenticatedRedir(Login);
+  const Protected = userIsAuthenticatedRedir(Cap);
   return (
     <div>
       <Switch>
         <Route exact path="/campaigns" component={Protected} />
-        <Route exact path="/login" component={LoginComp} />
+        <Route exact path="/login" component={Login} />
 
         <Route component={NotFoundPage} />
       </Switch>

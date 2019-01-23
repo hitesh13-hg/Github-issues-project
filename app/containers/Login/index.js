@@ -7,12 +7,12 @@ import { withRouter } from 'react-router-dom'
 import { Row, Col } from 'antd';
 import { bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import {makeSelectCap} from '../Cap/selectors';
+import { makeSelectCap } from '../Cap/selectors';
 import messages from './messages';
 import config from '../../config/app';
-import LoginForm from './components/LoginForm';
-import * as actions from '../../containers/Cap/actions';
-import { UserIsNotAuthenticated } from '../../utils/authWrapper';
+import LoginForm from '../../components/LoginForm';
+import * as actions from '../Cap/actions';
+import { userIsNotAuthenticatedRedir } from '../../utils/authWrapper';
 import loaderGif from '../../assets/loading_img.gif';
 const logo = require('./assets/images/capillary_logo.png');
 
@@ -101,4 +101,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default UserIsNotAuthenticated(connect(mapStateToProps, mapDispatchToProps)(withRouter(Login)));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withRouter(Login));

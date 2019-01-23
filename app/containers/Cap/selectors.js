@@ -22,8 +22,18 @@ const makeSelectCap = () =>
   createSelector(selectCapDomain, substate => substate.toJS());
 
 
+const makeSelectUser = () =>
+  createSelector(
+    selectCapDomain,
+    substate => !!substate.get('cap').toJS().token,
+  );
+
+const makeSelectUserLoading = () =>
+  createSelector(selectCapDomain, substate => substate.toJS().loadingUser);
 
 export {
   selectCapDomain,
   makeSelectCap,
+  makeSelectUser,
+  makeSelectUserLoading
 };

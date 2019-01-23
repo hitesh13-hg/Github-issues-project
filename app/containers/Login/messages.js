@@ -1,8 +1,3 @@
-/*
- * Login Messages
- *
- * This contains all the text for the Login component.
- */
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
@@ -10,12 +5,17 @@ export default defineMessages({
     id: 'app.containers.Login.pageTitle',
     defaultMessage: 'Login',
   },
-  header: {
-    id: 'app.containers.Login.header',
-    defaultMessage: 'This is Login container change !',
-  },
   invalidCredential: {
     id: 'app.containers.Login.invalidCredential',
     defaultMessage: 'Invalid Username or Password',
+  },
+  somethingWrong: {
+    id: 'app.containers.Login.somethingWrong',
+    defaultMessage: 'Something Went Wrong',
+  },
+  sessionExpired: {
+    id: 'app.containers.Login.sessionTimedOut',
+    defaultMessage: `We have logged you out either because your log in time has exceeded <b>24 hrs</b><br />
+      or because you <b>logged out in another tab</b>. Please log in again to continue.`,
   },
 });

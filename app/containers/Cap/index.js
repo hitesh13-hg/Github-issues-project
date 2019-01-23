@@ -16,12 +16,11 @@ import injectSaga from '../../utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import {makeSelectCap, makeSelectUser} from './selectors';
 import reducer from './reducer';
-import saga from './saga';
+import sagas from './saga';
 import messages from './messages';
 import { injectIntl, intlShape } from 'react-intl';
 import TopBar from '../../components/TopBar';
 import Sidebar from '../../components/Sidebar';
-import { UserIsAuthenticated } from '../../utils/authWrapper';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -148,7 +147,7 @@ export class Cap extends React.Component {
               />
             </div> : '' }
             <div className="main-content">
-
+              abcd
             </div>
           </div>
         </div>
@@ -188,10 +187,11 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer({ key: 'cap', reducer });
-const withSaga = injectSaga({ key: 'cap', saga });
+// const withSaga = sagas.map((saga, index) => injectSaga({ key: `cap-${index}`, saga }));
+const withSaga = sagas.map((saga, index) => injectSaga({ key: `cap-${index}`, saga }));
 
-export default UserIsAuthenticated(compose(
+export default compose.apply(null, [
   withReducer,
-  withSaga,
+  ...withSaga,
   withConnect,
-)(injectIntl(withRouter(Cap))));
+])(injectIntl(withRouter(Cap)));

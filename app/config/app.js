@@ -11,8 +11,8 @@ const config = {
   development: {
     api_endpoint: 'https://nightly.capillary.in/arya/api/v1/creatives',
     auth_endpoint: 'https://nightly.capillary.in/arya/api/v1/auth',
-    login_url: 'auth/login',
-    dashboard_url: '/sms',
+    login_url: '/login',
+    dashboard_url: '/campaigns',
   },
   testing: {
     api_endpoint: '',
