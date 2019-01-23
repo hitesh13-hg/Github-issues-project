@@ -10,16 +10,25 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import HomePage from 'containers/HomePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import Cap from '../Cap';
+import Login from '../Login';
+import NotFoundPage from '../NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
+import {
+  UserIsAuthenticated,
+  UserIsNotAuthenticated,
+} from '../../utils/authWrapper';
 
 export default function App() {
+  const LoginComp = UserIsNotAuthenticated(Login);
+  const Protected = UserIsAuthenticated(Cap);
   return (
     <div>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/campaigns" component={Protected} />
+        <Route exact path="/login" component={LoginComp} />
+
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

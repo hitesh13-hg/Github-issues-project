@@ -1,0 +1,115 @@
+#cap-sidebar{
+  padding: 8px 0 8px 0;
+  max-width: 200px;
+  min-width: 200px;
+  width: 16%;
+  overflow-y: hidden;
+  // height: 100%;
+  // display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  // display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  // display: -ms-flexbox;      /* TWEENER - IE 10 */
+  // display: -webkit-flex;     /* NEW - Chrome */
+  // display: flex;
+  overflow-x: hidden;
+  .header.item{
+    padding-left: 8px !important;
+  }
+}
+
+.sidebar-container {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;
+  flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+}
+
+.sidebar-accordian .content .item.menu-item:hover{
+  margin-left: 0 !important;
+  text-indent: 0 !important;
+}
+.sidebar-accordian .content .item.menu-item.selected{
+  margin-left: 0 !important;
+  text-indent: 0 !important;
+}
+.ui.accordion.sidebar-accordian .content .item.selected{
+  background: #F2F3F7 !important;
+  padding-left: 40px !important;
+}
+
+.item.menu-item{
+  // margin-left: 0px;
+  padding-left: 40px !important;
+  border-left-width: 0 !important;
+  text-decoration: none;
+}
+.item.menu-item.selected{
+  border-left: 4px solid #2e89df !important;
+}
+
+.item.menu-item.assetItem{
+  padding-left: 28px !important;
+  line-height: 28px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.ui.accordion.sidebar-accordian {
+  padding-top: 8px !important;
+  margin-left: 0;
+}
+
+.ui.accordion.sidebar-accordian .title{
+  font-size: 12px !important;
+  line-height: 32px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.sidebar-width {
+  // width: 200px !important;
+  max-width: 250px;
+  min-width: 190px;
+  width: 200px;
+}
+.module-menu-header {
+  padding-top: 8px!important;
+  line-height: 32px!important;
+  font-size: 16px!important;
+  margin-left: 0!important;
+  padding-left: 8px;
+}
+
+// .searchbar {
+//   height: 32px;
+//   padding-left: 8px;
+// }
+
+.menu-header {
+  font-size: 12px!important;
+  line-height: 32px!important;
+  margin: 0!important;
+  padding: 0 0 0 8px!important;
+  width: 100%;
+}
+.menu-title {
+  flex: 0 0 90%!important;
+}
+
+.product-select-menu {
+  width: 100%;
+  padding-left: 2px;
+  background: #F2F3F7;
+  font-family: proxima-nova;
+  font-size: 16px !important;
+  font-weight: 600;
+
+  .ant-select-selection {
+    background: #F2F3F7;
+    border: none !important;
+  }
+}
