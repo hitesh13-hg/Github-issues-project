@@ -2,18 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
+import {FormattedMessage, injectIntl} from 'react-intl';
 import { withRouter } from 'react-router-dom'
 import { Row, Col } from 'antd';
-import { bindActionCreators } from 'redux';
+import {bindActionCreators, compose} from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectCap } from '../Cap/selectors';
+import { makeSelectLogin } from '../Cap/selectors';
 import messages from './messages';
 import config from '../../config/app';
 import LoginForm from '../../components/LoginForm';
 import * as actions from '../Cap/actions';
-import { userIsNotAuthenticatedRedir } from '../../utils/authWrapper';
 import loaderGif from '../../assets/loading_img.gif';
+import reducer from "../Cap/reducer";
+import sagas from "../Cap/saga";
+import injectSaga from '../../utils/injectSaga';
+import injectReducer from '../../utils/injectReducer';
+import locationHelperBuilder from "redux-auth-wrapper/history4/locationHelper";
+
 const logo = require('./assets/images/capillary_logo.png');
 
 export class Login extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -44,7 +49,9 @@ export class Login extends React.Component { // eslint-disable-line react/prefer
 
     if (!wasAuthenticated && isAuthenticated) {
       let redirectUrl = process.env.NODE_ENV === 'production' ? config.production.dashboard_url : config.development.dashboard_url;
-      if (this.props.location.query.redirect) redirectUrl = this.props.location.query.redirect;
+      const locationHelper = locationHelperBuilder({});
+      const redirect = locationHelper.getRedirectQueryParam(this.props);
+      if (redirect) redirectUrl = redirect;
       this.props.router.push({ pathname: redirectUrl, state: {} });
       this.props.router.go(redirectUrl);
     }
@@ -92,7 +99,7 @@ Login.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  Login: makeSelectCap(),
+  Login: makeSelectLogin(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -101,7 +108,18 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
+const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withRouter(Login));
+);
+
+const withReducer = injectReducer({ key: 'cap', reducer });
+// const withSaga = sagas.map((saga, index) => injectSaga({ key: `cap-${index}`, saga }));
+const withSaga = sagas.map((saga, index) => injectSaga({ key: `cap-${index}`, saga }));
+
+
+export default compose.apply(null, [
+  withReducer,
+  ...withSaga,
+  withConnect,
+])(injectIntl(withRouter(Login)));

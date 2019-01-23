@@ -37,7 +37,7 @@ function redirectIfUnauthenticated(response) {
     } else {
       if (isLoginPage && isAuthUserCall) return;
       clearLocalStorage();
-      const loginPage = `${pathConfig.publicPath}${config.development.login_url}`;
+      const loginPage = `${config.development.login_url}`;
       window.location = `${loginPage}`;
     }
   }

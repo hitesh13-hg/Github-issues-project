@@ -7,7 +7,8 @@ import { loadItem } from './services/localStorageApi';
 
 export default {
   cap: {
-    loadingUser: true,
+    login_progress: false,
+    fetching_userdata: false,
     token: loadItem('token') || '',
     orgID: loadItem('orgID') || '',
     // user: loadItem('user') || '',

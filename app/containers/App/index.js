@@ -21,7 +21,7 @@ import {
 } from '../../utils/authWrapper';
 
 export default function App() {
-  const LoginComp = userIsNotAuthenticatedRedir(Login);
+  // const LoginComp = userIsNotAuthenticatedRedir(Login);
   const Protected = userIsAuthenticatedRedir(Cap);
   return (
     <div>

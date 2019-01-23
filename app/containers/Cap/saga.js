@@ -10,7 +10,6 @@ import pathConfig from '../../config/path';
 
 function* authorize(user) {
   try {
-    debugger
     const res = yield call(Api.authorize, user);
     yield call(LocalStorage.saveItem, 'token', res.token);
     yield call(LocalStorage.saveItem, 'orgID', res.user.orgID);
@@ -40,7 +39,6 @@ function* switchOrg({orgID}) {
 function* loginFlow() {
   const condition = true;
   while (condition) {
-    debugger
     const { user } = yield take(types.LOGIN_REQUEST);
     const task = yield fork(authorize, user);
     const action = yield take([types.LOGOUT_REQUEST, types.LOGIN_FAILURE]);
@@ -58,7 +56,7 @@ function* logoutFlow() {
     const serverLogout = yield call(Api.logout);
     if (serverLogout.success && serverLogout.success === true) {
       const loginUrl = (process.env.NODE_ENV === 'production') ?
-        `${pathConfig.publicPath}${config.production.login_url}` : `${pathConfig.publicPath}${config.development.login_url}`;
+        `${config.production.login_url}` : `${config.development.login_url}`;
       yield [put({type: types.LOGOUT_SUCCESS})];
       yield call(LocalStorage.clearItem, 'token');
       yield call(LocalStorage.clearItem, 'orgID');
