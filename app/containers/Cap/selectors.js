@@ -6,9 +6,8 @@ import { fromJS } from 'immutable';
  * Direct selector to the cap state domain
  */
 
-const selectCapDomain = state => {
-  return state.get('cap', fromJS(initialState));
-}
+const selectCapDomain = (state) => state.get('cap');
+
 
 /**
  * Other specific selectors
@@ -22,12 +21,12 @@ const makeSelectCap = () =>
   createSelector(selectCapDomain, substate => substate.toJS());
 
 const makeSelectLogin = () =>
-  createSelector(selectCapDomain, substate => substate.get('cap').toJS());
+  createSelector(selectCapDomain, substate => substate.toJS());
 
 const makeSelectUser = () =>
   createSelector(
     selectCapDomain,
-    substate => !!substate.get('cap').toJS().token,
+    substate => !!substate.toJS().token,
   );
 
 const makeSelectUserLoading = () =>

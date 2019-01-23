@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { Row, Col } from 'antd';
 import {bindActionCreators, compose} from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectLogin } from '../Cap/selectors';
+import { makeSelectLogin, makeSelectCap } from '../Cap/selectors';
 import messages from './messages';
 import config from '../../config/app';
 import LoginForm from '../../components/LoginForm';
@@ -99,7 +99,7 @@ Login.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  Login: makeSelectLogin(),
+  Login: makeSelectCap(),
 });
 
 function mapDispatchToProps(dispatch) {
