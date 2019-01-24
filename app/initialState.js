@@ -19,22 +19,4 @@ export default {
     },
     // isLoggedIn,
   },
-  app: {
-
-  },
-  create: {
-
-  },
-  edit: {
-
-  },
-  templates: {
-
-  },
-  email: {
-
-  },
-  ebill: {
-
-  },
 };

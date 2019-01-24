@@ -52,8 +52,8 @@ export class Login extends React.Component { // eslint-disable-line react/prefer
       const locationHelper = locationHelperBuilder({});
       const redirect = locationHelper.getRedirectQueryParam(this.props);
       if (redirect) redirectUrl = redirect;
-      this.props.router.push({ pathname: redirectUrl, state: {} });
-      this.props.router.go(redirectUrl);
+      this.props.history.push(redirectUrl);
+      // this.props.router.go(redirectUrl);
     }
   }
 

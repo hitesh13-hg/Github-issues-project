@@ -10,17 +10,20 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
+import { compose, bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import injectSaga from '../../utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import { isEqual } from 'lodash';
 import {makeSelectCap, makeSelectUser} from './selectors';
 import reducer from './reducer';
 import sagas from './saga';
 import messages from './messages';
 import { injectIntl, intlShape } from 'react-intl';
 import TopBar from '../../components/TopBar';
-import Sidebar from '../../components/Sidebar';
+import * as actions from './actions';
+import config from '../../config/app';
+const gtm = window.dataLayer || [];
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -66,8 +69,114 @@ export class Cap extends React.Component {
       ],
     };
   }
+  componentWillMount() {
+    this.props.actions.getUserData();
+    if (this.props.Global.user) {
+      const userGtmData = this.getUserGtmData(this.props);
+      gtm.push(userGtmData);
+    }
+    if (this.props.Global.orgID !== undefined) {
+      gtm.push({orgId: this.props.Global.orgID});
+    }
+    if (this.props.Global.isLoggedIn) {
+      if (this.props.Global.user && Object.keys(this.props.Global.user).length) {
+        // gtm.push({userId: this.props.Global.user.id});
+        // this.props.appActions.getSidebar();
+      }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const user = this.props.Global.user;
+    const nextPropsUser = nextProps.Global.user;
+    if (!nextProps.Global.settingProxyOrg && nextProps.Global.changeProxyOrgSuccess &&
+      !_.isEqual(nextProps.Global.changeProxyOrgSuccess, this.props.Global.changeProxyOrgSuccess) && !this.state.switchedOrg) {
+      this.navigateToDashboard();
+    }
+
+    // const callBack = nextProps.routeParams.callbackUrl ? decodeURIComponent(nextProps.routeParams.callbackUrl) : "";
+    // if (nextProps.Global.error) {
+    //   const locationValue = `${window.location.origin}${callBack}?flash=${nextProps.Global.error}`;
+    //   window.location.replace(locationValue);
+    //   window.location.reload();
+    // }
+
+    // if (nextPropsUser && user && nextProps.Global.isLoggedIn && nextProps.Global.isLoggedIn !== this.props.Global.isLoggedIn) {
+    //   this.props.appActions.getSidebar();
+    // }
+
+    if (nextProps.Global.user && this.props.Global.user && (nextProps.Global.user.refID !== this.props.Global.user.refID)) {
+      const userGtmData = this.getUserGtmData(nextProps);
+      gtm.push(userGtmData);
+    }
+
+    if (nextProps.Global.isLoggedIn && nextProps.Global.isLoggedIn !== this.props.Global.isLoggedIn) {
+      if (nextProps.Global.orgID !== undefined && !isEqual(nextProps.Global.orgID, this.props.Global.orgID)) {
+        const userGtmData = this.getUserGtmData(nextProps);
+        gtm.push(userGtmData);
+      }
+    }
+  }
+
+  getUserGtmData = (props) => {
+    const { user: userData } = props.Global;
+    const userName = userData.attributes.USERNAME;
+    const userEmail = userData.attributes.EMAIL;
+    const orgObj = find(userData.proxyOrgList, {orgID: props.Global.orgID});
+    const gtmData = {
+      orgId: props.Global.orgID,
+      orgName: orgObj && orgObj.orgName,
+      userId: userData.refID,
+      userName: userName && userName.value,
+      userEmail: userEmail && userEmail.value,
+      isCapUser: userData.isCapUser,
+    };
+    return gtmData;
+  }
+
+
+  componentWillUnmount() {
+    this.setState({switchedOrg: false, switchedOu: false});
+  }
+
+  handleRemoveMessage = (messageIndex) => {
+    this.props.actions.removeMessageFromQueue(messageIndex);
+  };
+
+  updateMenu = (id) => {
+    this.props.actions.updateMenu(id);
+  };
+
+  navigateToDashboard = () => {
+    const defaultPage = (process.env.NODE_ENV === 'production') ? config.production.dashboard_url : config.development.dashboard_url;
+    this.props.history.push(defaultPage);
+  };
+
+  logout = () => {
+    if (process.env.NODE_ENV === 'production') {
+      const originUrl = window.location.origin;
+      const logoutpage = `${originUrl}/logout`;
+      localStorage.removeItem('token');
+      localStorage.removeItem('orgID');
+      localStorage.removeItem('ouId');
+      localStorage.removeItem('user');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('lastReport');
+      window.location.href = logoutpage;
+    } else {
+      this.props.actions.logout();
+    }
+  };
+
+  changeOrg = (orgId) => {
+    this.props.actions.changeOrg(orgId);
+  };
+
+  changeOu = (ouId) => {
+    this.props.actions.changeOu(ouId);
+  };
   render() {
-    const userData = this.props.cap;
+    const userData = this.props.Global;
     const query = new URLSearchParams(this.props.location.search)
     const type = query.get("type");
     // const changeOrg = this.props.actions.changeOrg;
@@ -97,8 +206,8 @@ export class Cap extends React.Component {
       userName = userData.user.firstName;
     }
     const actionComponents = "";
-    const toastMessages = this.props.cap.messages;
-    const loggedIn = this.props.cap.isLoggedIn;
+    const toastMessages = this.props.Global.messages;
+    const loggedIn = this.props.Global.isLoggedIn;
 
 
     const productMenuData = [
@@ -108,8 +217,8 @@ export class Cap extends React.Component {
       //   url: '/creatives/ui/',
       // },
     ];
-    if (this.props.cap.currentOrgDetails) {
-      _.forEach(this.props.cap.currentOrgDetails.module_details, (module) => {
+    if (this.props.Global.currentOrgDetails) {
+      _.forEach(this.props.Global.currentOrgDetails.module_details, (module) => {
         if (module.display_order > 0) {
           productMenuData.push({
             text: (messages[module.name]) ? this.props.intl.formatMessage(messages[module.name]) : module.name,
@@ -138,23 +247,14 @@ export class Cap extends React.Component {
               logout={this.logout}
             /> : ''}
           <div className="main">
-            {loggedIn && type !== 'embedded' ? <div id="cap-sidebar" className={'sidebar'}>
-              <Sidebar
-                menuData={this.state.menuData}
-                productMenuData={productMenuData}
-                actionComponents={actionComponents}
-                router={this.props.router}
-              />
-            </div> : '' }
             <div className="main-content">
-              abcd
             </div>
           </div>
         </div>
         {(toastMessages && toastMessages.length > 0) ?
           <Toastr timeout={4000} messagesList={toastMessages} position="top-right" handleRemoveMessage={this.handleRemoveMessage} />
           : ''}
-        {this.props.cap.fetching_userdata &&
+        {this.props.Global.fetching_userdata &&
         <div className="cap-loader-box">
           <img
             className="loader-image"
@@ -169,15 +269,16 @@ export class Cap extends React.Component {
 
 Cap.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  Global: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
-  cap: makeSelectCap(),
+  Global: makeSelectCap(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    actions: bindActionCreators(actions, dispatch),
   };
 }
 

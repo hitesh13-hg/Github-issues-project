@@ -7,10 +7,10 @@ import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper'
 import { makeSelectUser, makeSelectUserLoading } from '../containers/Cap/selectors';
 import Loading from '../components/Loading'
 const orginUrl = window.location.origin;
+import config from '../config/app';
 
 const getIsLoggedIn = () => {
   let isLoggedIn = false;
-  debugger;
   if (process.env.NODE_ENV === "production" && JSON.parse(window.localStorage.getItem('isLoggedIn'))) {
     isLoggedIn = true;
     console.log("Auth wrapper production", isLoggedIn);
@@ -50,12 +50,13 @@ export const userIsNotAuthenticated = connectedAuthWrapper(
   userIsNotAuthenticatedDefaults
 );
 
+const redirectUrl = process.env.NODE_ENV === 'production' ? config.production.dashboard_url : config.development.dashboard_url;
+
 export const userIsNotAuthenticatedRedir = connectedRouterRedirect({
   ...userIsNotAuthenticatedDefaults,
   // redirectPath: '/login',
-  redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/campaigns',
+  redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || redirectUrl,
   allowRedirectBack: false,
-  predicate: (acv) => {debugger},
 });
 
 // Take the regular authentication & redirect to login from before
