@@ -4,8 +4,6 @@
 import 'whatwg-fetch';
 import { loadItem, clearItem } from './localStorageApi';
 import config from '../config/app';
-import pathConfig from '../config/path';
-import * as API from '../utils/ApiCaller';
 let API_ENDPOINT = config.development.api_endpoint;
 let API_AUTH_ENDPOINT = config.development.auth_endpoint;
 if (process.env.NODE_ENV === 'production') {
@@ -28,7 +26,9 @@ function parseJSON(response) {
 function redirectIfUnauthenticated(response) {
   const isUnauthorized = response.status === 401;
   const isLoginPage = window.location.pathname.indexOf('/login') !== -1;
-  const isAuthUserCall = response.url.split('auth')[1] && response.url.split('auth')[1].split("?")[0] === '/user';
+  const isAuthUserCall =
+    response.url.split('auth')[1] &&
+    response.url.split('auth')[1].split('?')[0] === '/user';
   if (isUnauthorized) {
     if (isProd) {
       const originUrl = window.location.origin;
@@ -52,7 +52,10 @@ function clearLocalStorage() {
 }
 
 function checkStatus(response) {
-  if ((response.status >= 200 && response.status < 300) || response.status === 500) {
+  if (
+    (response.status >= 200 && response.status < 300) ||
+    response.status === 500
+  ) {
     return response;
   }
 
@@ -64,13 +67,16 @@ function checkStatus(response) {
 }
 
 function request(url, options) {
-  const fetchUrl = url.indexOf('?') !== -1 ? `${url}&time=${Date.now()}` : `${url}?time=${Date.now()}`;
+  const fetchUrl =
+    url.indexOf('?') !== -1
+      ? `${url}&time=${Date.now()}`
+      : `${url}?time=${Date.now()}`;
   return fetch(fetchUrl, options)
     .then(checkStatus)
     .then(parseJSON);
 }
 
-function getAPICallObject(method, body, isFileUpload = false) {
+function getAPICallObjectForAuth(method, body, isFileUpload = false) {
   const token = loadItem('token');
   const orgID = loadItem('orgID');
   const user = loadItem('user');
@@ -113,8 +119,49 @@ function getAPICallObject(method, body, isFileUpload = false) {
   return requestObj;
 }
 
+const dataOrgId = isProd
+  ? config.production.data_org_id
+  : config.development.data_org_id;
+
+function getAPICallObject(method, body) {
+  const token = loadItem('token');
+  const orgID = loadItem('orgID');
+  const ouId = loadItem('ouId');
+  const user = loadItem('user');
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (user && user.refID) {
+    headers['X-CAP-REMOTE-USER'] = user.refID;
+  }
+  if (process.env.NODE_ENV !== 'production' && orgID !== undefined) {
+    headers['X-CAP-API-AUTH-ORG-ID'] = orgID;
+  }
+  if (ouId !== undefined) {
+    headers['x-cap-api-auth-ou-id'] = ouId;
+  }
+  headers['x-cap-api-data-context-org-id'] = orgID === 0 ? dataOrgId : orgID;
+  if (process.env.NODE_ENV !== 'production' && token !== undefined) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const requestObj = {
+    method,
+    mode: 'cors',
+    headers: new Headers(headers),
+  };
+
+  if (isProd) {
+    requestObj.credentials = 'same-origin';
+  }
+
+  if (body) {
+    requestObj.body = JSON.stringify(body);
+  }
+  return requestObj;
+}
 // Authentication
-export const authorize = (user) => {
+export const authorize = user => {
   const body = {
     username: user.username,
     password: user.password,
@@ -135,30 +182,20 @@ export const authorize = (user) => {
 
 export const logout = () => {
   const url = `${API_AUTH_ENDPOINT}/logout`;
-  return request(url, getAPICallObject('GET'));
+  return request(url, getAPICallObjectForAuth('GET'));
 };
 
-export const changeProxyOrg = (orgId) => {
+export const changeProxyOrg = orgId => {
   const url = `${API_AUTH_ENDPOINT}/setProxy/${orgId}`;
-  return request(url, getAPICallObject('Post'));
-};
-
-export const getSidebar = () => {
-  //Insert your call here for getting sidebar
-  const url = `${API_ENDPOINT}/getSidebar`;
-  const response = {response: {sidebar: [url]}};
-  // return request(url, getAPICallObject('GET'));
-  return response;
+  return request(url, getAPICallObjectForAuth('Post'));
 };
 
 export const getUserData = () => {
   const url = `${API_AUTH_ENDPOINT}/user`;
+  return request(url, getAPICallObjectForAuth('GET'));
+};
+
+export const getMenuData = code => {
+  const url = `${API_AUTH_ENDPOINT}/user/${code}/actions`;
   return request(url, getAPICallObject('GET'));
 };
-
-
-export const getUserList = () => {
-  const url = `${API_AUTH_ENDPOINT}/org/users`;
-  return API.get(url);// request(url, getAPICallObject('GET'));
-};
-

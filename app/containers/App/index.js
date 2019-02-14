@@ -7,34 +7,37 @@
  *
  */
 
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { Switch, Route, Router, Redirect } from 'react-router-dom';
+import history from 'utils/history';
 
 import Cap from '../Cap';
 import Login from '../Login';
 import NotFoundPage from '../NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
-import config from '../../config/app';
+import { publicPath } from '../../config/path';
 
-import {
-  userIsAuthenticatedRedir,
-  userIsNotAuthenticatedRedir,
-} from '../../utils/authWrapper';
-
-const dashBoardUrl = process.env.NODE_ENV === 'production' ? config.production.dashboard_url : config.development.dashboard_url
-
+import { userIsAuthenticatedRedir } from '../../utils/authWrapper';
+const Protected = userIsAuthenticatedRedir(Cap);
+const RenderRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => <Component {...props} />} />
+);
 export default function App() {
-  // const LoginComp = userIsNotAuthenticatedRedir(Login);
-  const Protected = userIsAuthenticatedRedir(Cap);
   return (
     <div>
-      <Switch>
-        <Route exact path={dashBoardUrl} component={Protected} />
-        <Route exact path="/login" component={Login} />
-
-        <Route component={NotFoundPage} />
-      </Switch>
+      <Router history={history}>
+        <Switch>
+          <RenderRoute exact path="/login" component={Login} />
+          <RenderRoute
+            path={publicPath}
+            component={Protected}
+            key={publicPath}
+          />
+          <Redirect exact from="/" to={`${publicPath}/index`} push />
+          <RenderRoute component={NotFoundPage} />
+        </Switch>
+      </Router>
       <GlobalStyle />
     </div>
   );

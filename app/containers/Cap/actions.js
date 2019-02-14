@@ -24,7 +24,6 @@ export function changeOrg(orgID) {
 }
 
 export function addMessageToQueue(message) {
-  console.log('CAP Action ', message);
   return {
     type: types.ADD_MESSAGE,
     message,
@@ -44,9 +43,23 @@ export function getUserData() {
   };
 }
 
-export function fetchSchemaForEntity(queryParams) {
-  console.log('fetch schema action');
+export function getMenuData(code) {
   return {
-    type: types.GET_SCHEMA_FOR_ENTITY_REQUEST, queryParams,
+    type: types.GET_MENU_DATA_REQUEST,
+    code,
+  };
+}
+
+export function getMenuDataSuccess(data) {
+  return {
+    type: types.GET_MENU_DATA_SUCCESS,
+    data,
+  };
+}
+
+export function getMenuDataFailure(error) {
+  return {
+    type: types.GET_MENU_DATA_FAILURE,
+    error,
   };
 }
