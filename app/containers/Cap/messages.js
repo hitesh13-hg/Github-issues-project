@@ -13,4 +13,12 @@ export default defineMessages({
     id: `${scope}.header`,
     defaultMessage: 'This is the Cap container!',
   },
+  done: {
+    id: `${scope}.done`,
+    defaultMessage: 'Done',
+  },
+  cancel: {
+    id: `${scope}.cancel`,
+    defaultMessage: 'Cancel',
+  },
 });

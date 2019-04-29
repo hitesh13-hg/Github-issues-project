@@ -3,22 +3,29 @@ import _ from 'lodash';
 import * as types from './constants';
 import initialState from '../../initialState';
 
-function capReducer(state = fromJS(initialState), action) {
+function capReducer(state = fromJS(initialState.cap), action) {
   switch (action.type) {
     case types.LOGIN_REQUEST:
-      return state.set('login_progress', true);
+      return state
+        .set('login_progress', true)
+        .set('errorCode', '')
+        .set('message', '');
     case types.LOGIN_SUCCESS:
       return state
         .set('login_progress', false)
         .set('token', action.res.token)
         .set('user', fromJS(action.res.user))
+        .set('errorCode', '')
+        .set('orgID', action.res.user.orgID)
         .set('message', '')
         .set('authenticated', true)
         .set('isLoggedIn', true);
     case types.LOGIN_FAILURE:
       return state
         .set('login_progress', false)
-        .set('message', action.error.message);
+        .set('message', action.error.message)
+        .set('errorCode', action.error.response.status)
+        .set('isLoggedIn', false);
     case types.LOGOUT_REQUEST:
       return state.set('login_progress', false);
     case types.LOGOUT_SUCCESS:
@@ -60,7 +67,7 @@ function capReducer(state = fromJS(initialState), action) {
       return state.set('messages', fromJS(messageQueue));
     }
     case types.GET_USER_DATA_REQUEST:
-      return state.set('fetching_userdata', true).set('isLoggedIn', false);
+      return state.set('fetching_userdata', true);
     case types.GET_USER_DATA_SUCCESS:
       return state
         .set('fetching_userdata', false)
@@ -69,7 +76,7 @@ function capReducer(state = fromJS(initialState), action) {
         .set('isLoggedIn', true)
         .set('orgID', action.currentOrgId);
     case types.GET_USER_DATA_FAILURE:
-      return state.set('fetching_userdata', false).set('isLoggedIn', false);
+      return state.set('fetching_userdata', false);
     case types.GET_MENU_DATA_REQUEST:
       return state.set('menuData', fromJS({ status: 'request' }));
     case types.GET_MENU_DATA_SUCCESS:

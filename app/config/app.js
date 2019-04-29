@@ -7,7 +7,7 @@ const config = {
   production: {
     api_endpoint: '/arya/api/v1/creatives',
     auth_endpoint: '/arya/api/v1/auth',
-    login_url: '/login',
+    login_url: 'auth/login',
     dashboard_url: path.publicPath,
     data_org_id: 0,
     logout_url: '/auth/logout',

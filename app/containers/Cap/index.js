@@ -12,7 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import { isEqual, find } from 'lodash';
 import { injectIntl } from 'react-intl';
-import CapSpinner from '@capillarytech/cap-react-ui-library/CapSpinner';
+import { CapSpin } from '@capillarytech/cap-ui-library';
 import injectSaga from '../../utils/injectSaga';
 import componentRoutes from './routes';
 import NavigationBar from '../../components/NavigationBar';
@@ -24,6 +24,11 @@ import config from '../../config/app';
 const gtm = window.dataLayer || [];
 
 export class Cap extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     if (!this.props.Global.fetching_userdata) {
       this.props.actions.getUserData();
@@ -35,18 +40,18 @@ export class Cap extends React.Component {
     if (this.props.Global.orgID !== undefined) {
       gtm.push({ orgId: this.props.Global.orgID });
     }
-    if (this.props.Global.isLoggedIn) {
-      if (
-        this.props.Global.user &&
-        Object.keys(this.props.Global.user).length
-      ) {
-        // gtm.push({userId: this.props.Global.user.id});
-        // this.props.appActions.getSidebar();
-      }
-    }
+    // if (this.props.Global.isLoggedIn) {
+    //   if (
+    //     this.props.Global.user &&
+    //     Object.keys(this.props.Global.user).length
+    //   ) {
+    //     // gtm.push({userId: this.props.Global.user.id});
+    //     // this.props.appActions.getSidebar();
+    //   }
+    // }
   }
 
-  componentWillReceiveProps(nextProps) {
+  /*componentWillReceiveProps(nextProps) {
     if (
       !nextProps.Global.settingProxyOrg &&
       nextProps.Global.changeProxyOrgSuccess &&
@@ -82,7 +87,7 @@ export class Cap extends React.Component {
     if (!isEqual(currentOrgDetails, this.props.Global.currentOrgDetails)) {
       this.props.actions.getMenuData('org');
     }
-  }
+  } */
 
   getUserGtmData = props => {
     const { user: userData } = props.Global;
@@ -111,15 +116,17 @@ export class Cap extends React.Component {
   navigateToDashboard = () => {
     const defaultPage =
       process.env.NODE_ENV === 'production'
-        ? config.production.dashboard_url
+        ? `${config.production.dashboard_url}/list`
         : config.development.dashboard_url;
-    this.props.history.push(defaultPage);
+    const originUrl = window.location.origin;
+    window.location.href = `${originUrl}${defaultPage}`;
   };
 
   logout = () => {
     if (process.env.NODE_ENV === 'production') {
+      const logout_url = config.production.logout_url;
       const originUrl = window.location.origin;
-      const logoutpage = `${originUrl}${config.production.logout_url}`;
+      const logoutpage = `${originUrl}${logout_url}`;
       localStorage.removeItem('token');
       localStorage.removeItem('orgID');
       localStorage.removeItem('ouId');
@@ -133,14 +140,35 @@ export class Cap extends React.Component {
   };
 
   changeOrg = orgId => {
-    this.props.actions.changeOrg(orgId);
+    this.props.actions.changeOrg(orgId, this.navigateToDashboard);
+  };
+
+  changeOu = ouId => {
+    this.props.actions.changeOu(ouId);
+  };
+
+  getDefaultSelectedMenuItem = () => {
+    const { menuData, history } = this.props;
+    const { pathname } = history.location;
+    let selectedMenuItem = '';
+    menuData.forEach(obj => {
+      if (obj.link === pathname) {
+        selectedMenuItem = obj.key;
+      }
+    });
+    return selectedMenuItem;
   };
 
   render() {
     const { menuData } = this.props;
-    const loggedIn = !!this.props.Global.token;
+    const loggedIn =
+      this.props.Global.isLoggedIn &&
+      (this.props.Global.orgID === 0 || this.props.Global.orgID);
     return (
-      <CapSpinner spinning={this.props.Global.fetching_userdata}>
+      <CapSpin
+        spinning={this.props.Global.fetching_userdata}
+        className="cap-container spinner"
+      >
         <Helmet>
           <title>Cap</title>
           <meta name="description" content="Description of Cap" />
@@ -149,13 +177,15 @@ export class Cap extends React.Component {
           <NavigationBar
             componentRoutes={componentRoutes}
             userData={this.props.Global}
-            menuData={menuData}
+            menuData={[]}
             menuItemsPosition="left"
             changeOrg={this.changeOrg}
             logout={this.logout}
+            settingsUrl="/org/index"
+            defaultSelectedMenuItem={this.getDefaultSelectedMenuItem()}
           />
         )}
-      </CapSpinner>
+      </CapSpin>
     );
   }
 }

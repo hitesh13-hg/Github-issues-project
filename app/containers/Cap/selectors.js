@@ -1,60 +1,65 @@
-/**
- * The global state selectors
- */
-
 import { createSelector } from 'reselect';
-import { initialState } from './reducer';
+
+/* parsing menu data in format required by topbar */
+function getParsedMenuData(data) {
+  const menuData = [];
+  Object.entries(data).map(([key, value]) => {
+    menuData.push({
+      label: value.name,
+      link: value.url,
+      key,
+      value: key,
+    });
+  });
+  return menuData;
+}
 
 /**
  * Direct selector to the cap state domain
  */
 
-const selectCap = state => state.get('cap', initialState);
+const selectCap = state => state.get('cap');
 
 /**
  * Other specific selectors
  */
 
-function getParsedMenuData(data) {
-  return Object.entries(data).map(([key, value]) => {
-    if (value.url) {
-      return {
-        title: value.name,
-        key,
-        link: value.url,
-      };
-    }
-    return {
-      title: key,
-      key,
-      children: getParsedMenuData(value),
-    };
-  });
-}
-
 const makeSelectCap = () =>
-  createSelector(selectCap, capstate => capstate.toJS());
+  createSelector(selectCap, substate => substate.toJS());
+
+const makeSelectOrgDetails = () =>
+  createSelector(selectCap, substate =>
+    substate.get('currentOrgDetails').toJS(),
+  );
+
+const makeSelectLogin = () =>
+  createSelector(selectCap, substate => substate.toJS());
 
 const makeSelectUser = () =>
-  createSelector(selectCap, capstate => !!capstate.get('token'));
+  createSelector(selectCap, substate => !!substate.toJS().token);
+
+const isUserLoggedIn = () =>
+  createSelector(selectCap, substate => substate.toJS().isLoggedIn);
 
 const makeSelectUserLoading = () =>
-  createSelector(selectCap, capstate => capstate.get('loadingUser'));
+  createSelector(selectCap, substate => substate.toJS().loadingUser);
 
 const makeSelectMenuData = () =>
-  createSelector(selectCap, capstate => {
-    const menuData = capstate.get('menuData').toJS();
+  createSelector(selectCap, substate => {
+    const menuData = substate.get('menuData').toJS();
     let parsedMenuData = [];
     if (menuData.status === 'success' && menuData.data) {
       parsedMenuData = getParsedMenuData(menuData.data._actions);
     }
     return parsedMenuData;
   });
-
 export {
   selectCap,
   makeSelectCap,
-  makeSelectUserLoading,
   makeSelectUser,
+  makeSelectOrgDetails,
+  makeSelectUserLoading,
+  makeSelectLogin,
+  isUserLoggedIn,
   makeSelectMenuData,
 };

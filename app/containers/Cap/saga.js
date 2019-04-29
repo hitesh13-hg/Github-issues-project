@@ -13,20 +13,22 @@ function* authorize(user) {
     yield call(LocalStorage.saveItem, 'token', res.token);
     yield call(LocalStorage.saveItem, 'orgID', res.user.orgID);
     yield call(LocalStorage.saveItem, 'user', res.user);
+    yield call(LocalStorage.saveItem, 'isLoggedIn', true);
     yield put({ type: types.LOGIN_SUCCESS, res });
   } catch (error) {
     yield put({ type: types.LOGIN_FAILURE, error });
   }
 }
 
-function* switchOrg({ orgID }) {
+function* switchOrg({ orgID, successCallback }) {
   try {
     LocalStorage.saveItem('orgID', orgID);
     const res = yield call(Api.changeProxyOrg, orgID);
     yield [
       put({ type: types.SWITCH_ORG_SUCCESS, orgID, isSuccess: res.success }),
-      put({ type: types.GET_USER_DATA_REQUEST }),
+      // put({ type: types.GET_USER_DATA_REQUEST }),
     ];
+    yield successCallback();
   } catch (error) {
     yield put({ type: types.SWITCH_ORG_FAILURE, error });
   }

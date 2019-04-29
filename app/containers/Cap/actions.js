@@ -16,10 +16,11 @@ export function logout() {
   };
 }
 
-export function changeOrg(orgID) {
+export function changeOrg(orgID, successCallback) {
   return {
     type: types.SWITCH_ORG_REQUEST,
     orgID,
+    successCallback,
   };
 }
 
@@ -63,3 +64,14 @@ export function getMenuDataFailure(error) {
     error,
   };
 }
+
+export function getCampaignDetailsById(id) {
+  return {
+    type: types.GET_CAMPAIGN_DETAILS_BY_ID_REQUEST,
+    id,
+  };
+}
+
+export const getRemainingSMSCredits = () => ({
+  type: types.GET_SMS_REMAINING_CREDITS_REQUEST,
+});
