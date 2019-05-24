@@ -13,6 +13,7 @@ const extractSass = new ExtractTextPlugin({
 });
 
 module.exports = options => ({
+  mode: options.mode,
   node: {
     fs: 'empty',
   },
@@ -125,6 +126,23 @@ module.exports = options => ({
     modules: ['app', 'node_modules'],
     alias: {
       moment$: 'moment/moment.js',
+      react: path.resolve('node_modules/react'),
+      'react-dom': path.resolve('node_modules/react-dom'),
+      antd: path.resolve('node_modules/antd'),
+      'react-helmet': path.resolve('node_modules/react-helmet'),
+      'react-intl': path.resolve('node_modules/react-intl'),
+      'react-redux': path.resolve('node_modules/react-redux'),
+      'styled-components': path.resolve('node_modules/styled-components'),
+      'react-router': path.resolve('node_modules/react-router'),
+      '@capillarytech/cap-react-ui-library': path.resolve(
+        'node_modules/@capillarytech/cap-react-ui-library',
+      ),
+      '@capillarytech/cap-ui-library': path.resolve(
+        'node_modules/@capillarytech/cap-ui-library',
+      ),
+      '@capillarytech/creatives-library': path.resolve(
+        'node_modules/@capillarytech/creatives-library',
+      ),
     },
     extensions: ['.js', '.jsx', '.react.js'],
     mainFields: ['browser', 'jsnext:main', 'main'],

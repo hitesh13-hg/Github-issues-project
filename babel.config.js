@@ -11,13 +11,13 @@ module.exports = {
   plugins: [
     'styled-components',
     '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-syntax-dynamic-import',
     '@babel/plugin-proposal-export-default-from',
-    ["import", { "libraryName": "antd", "style": "css" }],
+    '@babel/plugin-syntax-dynamic-import',
+    ['import', { libraryName: 'antd', style: 'css' }],
   ],
   env: {
     production: {
-      only: ['app'],
+      only: ['app', 'node_modules/@capillarytech/*'],
       plugins: [
         'lodash',
         'transform-react-remove-prop-types',

@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
-import { isEqual, find } from 'lodash';
+import { find } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { CapSpin } from '@capillarytech/cap-ui-library';
 import injectSaga from '../../utils/injectSaga';
@@ -51,7 +51,7 @@ export class Cap extends React.Component {
     // }
   }
 
-  /*componentWillReceiveProps(nextProps) {
+  /* componentWillReceiveProps(nextProps) {
     if (
       !nextProps.Global.settingProxyOrg &&
       nextProps.Global.changeProxyOrgSuccess &&
