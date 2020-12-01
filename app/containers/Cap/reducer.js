@@ -1,6 +1,3 @@
-
-
-
 import { fromJS } from 'immutable';
 import _ from 'lodash';
 import * as types from './constants';
@@ -70,28 +67,30 @@ function capReducer(state = fromJS(initialState.cap), action) {
       return state.set('messages', fromJS(messageQueue));
     }
     case types.GET_USER_DATA_REQUEST:
-      return state.set('fetching_userdata', true);
+      return state.set('fetchingUserdata', true);
     case types.GET_USER_DATA_SUCCESS:
       return state
-        .set('fetching_userdata', false)
+        .set('fetchingUserdata', false)
         .set('user', fromJS(action.userData))
         .set('currentOrgDetails', fromJS(action.currentOrgDetails))
         .set('isLoggedIn', true)
         .set('orgID', action.currentOrgId);
     case types.GET_USER_DATA_FAILURE:
-      return state.set('fetching_userdata', false);
-    case types.GET_MENU_DATA_REQUEST:
-      return state.set('menuData', fromJS({ status: 'request' }));
-    case types.GET_MENU_DATA_SUCCESS:
+      return state.set('fetchingUserdata', false);
+    case types.GET_SIDEBAR_MENU_DATA_REQUEST:
+      return state.set('sidebarMenuData', fromJS({ status: 'request' }));
+    case types.GET_SIDEBAR_MENU_DATA_SUCCESS:
       return state.set(
-        'menuData',
+        'sidebarMenuData',
         fromJS({ status: 'success', data: action.data }),
       );
-    case types.GET_MENU_DATA_FAILURE:
+    case types.GET_SIDEBAR_MENU_DATA_FAILURE:
       return state.set(
-        'menuData',
+        'sidebarMenuData',
         fromJS({ status: 'failure', error: action.error }),
       );
+    case types.CLEAR_SIDEBAR_MENU_DATA:
+      return state.set('sidebarMenuData', fromJS({}));
     default:
       return state;
   }

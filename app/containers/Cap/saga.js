@@ -1,11 +1,8 @@
 import { fork, take, call, put, cancel, takeLatest } from 'redux-saga/effects';
-// import { LOCATION_CHANGE } from 'react-router-redux';
-// import { normalize } from 'normalizr';
 import * as Api from '../../services/api';
 import * as LocalStorage from '../../services/localStorageApi';
 import * as types from './constants';
 import config from '../../config/app';
-// import {makeSelectOrgId} from './selectors';
 
 function* authorize(user) {
   try {
@@ -26,7 +23,6 @@ function* switchOrg({ orgID, successCallback }) {
     const res = yield call(Api.changeProxyOrg, orgID);
     yield [
       put({ type: types.SWITCH_ORG_SUCCESS, orgID, isSuccess: res.success }),
-      // put({ type: types.GET_USER_DATA_REQUEST }),
     ];
     yield successCallback();
   } catch (error) {
@@ -66,19 +62,7 @@ function* logoutFlow() {
   }
 }
 
-function* getMenuData({ code }) {
-  try {
-    const response = yield call(Api.getMenuData, code);
-    yield put({
-      type: types.GET_MENU_DATA_SUCCESS,
-      data: response.result[code],
-    });
-  } catch (error) {
-    yield put({ type: types.GET_MENU_DATA_FAILURE, error });
-  }
-}
-
-export function* fetchUserInfo() {
+export function* fetchUserInfo({ callback }) {
   try {
     const result = yield call(Api.getUserData);
     const userData = result.user;
@@ -112,12 +96,16 @@ export function* fetchUserInfo() {
     }
     yield call(LocalStorage.saveItem, 'orgID', result.currentOrgId);
     yield call(LocalStorage.saveItem, 'user', userData);
+
     yield put({
       type: types.GET_USER_DATA_SUCCESS,
       userData,
       currentOrgId: result.currentOrgId,
       currentOrgDetails,
     });
+    if (callback) {
+      callback(userData);
+    }
   } catch (error) {
     yield call(LocalStorage.clearItem, 'user');
     yield put({
@@ -125,6 +113,10 @@ export function* fetchUserInfo() {
       error,
     });
   }
+}
+
+function* watchForFetchUserInfo() {
+  yield takeLatest(types.GET_USER_DATA_REQUEST, fetchUserInfo);
 }
 
 function* watchForOrgChange() {
@@ -135,18 +127,25 @@ function* watchForLogoutFlow() {
   yield takeLatest(types.LOGOUT_REQUEST, logoutFlow);
 }
 
-function* watchForFetchUserInfo() {
-  yield takeLatest(types.GET_USER_DATA_REQUEST, fetchUserInfo);
+function* getSidebarMenuData() {
+  try {
+    yield put({
+      type: types.GET_SIDEBAR_MENU_DATA_SUCCESS,
+      data: types.getSettingsMenuData(),
+    });
+  } catch (error) {
+    yield put({ type: types.GET_SIDEBAR_MENU_DATA_FAILURE, error });
+  }
 }
 
-function* watchGetMenuData() {
-  yield takeLatest(types.GET_MENU_DATA_REQUEST, getMenuData);
+function* watchGetSidebarMenuData() {
+  yield takeLatest(types.GET_SIDEBAR_MENU_DATA_REQUEST, getSidebarMenuData);
 }
 
 export default [
   loginFlow,
   watchForOrgChange,
   watchForLogoutFlow,
+  watchGetSidebarMenuData,
   watchForFetchUserInfo,
-  watchGetMenuData,
 ];

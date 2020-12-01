@@ -33,7 +33,7 @@ export class Login extends React.Component {
     const { push } = this.props.history;
     if (
       this.props.Login.login_progress === false &&
-      this.props.Login.fetching_userdata === false &&
+      this.props.Login.fetchingUserdata === false &&
       isAuthenticated
     ) {
       push(
@@ -71,9 +71,7 @@ export class Login extends React.Component {
   render() {
     const loginProgress = this.props.Login.login_progress;
     return (
-      <div
-        className={this.props.Login.fetching_userdata ? 'opacity-class' : ''}
-      >
+      <div className={this.props.Login.fetchingUserdata ? 'opacity-class' : ''}>
         <FormattedMessage {...messages.pageTitle}>
           {message => (
             <Helmet

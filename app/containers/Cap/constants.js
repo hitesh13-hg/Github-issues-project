@@ -1,3 +1,8 @@
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+import path from '../../config/path';
+
 export const DEFAULT_LOCALE = 'en';
 export const SWITCH_ORG_REQUEST = 'cap/SWITCH_ORG_REQUEST';
 export const SWITCH_ORG_SUCCESS = 'cap/SWITCH_ORG_SUCCESS';
@@ -15,6 +20,21 @@ export const GET_USER_DATA_REQUEST = 'cap/GET_USER_DATA_REQUEST';
 export const GET_USER_DATA_SUCCESS = 'cap/GET_USER_DATA_SUCCESS';
 export const GET_USER_DATA_FAILURE = 'cap/GET_USER_DATA_FAILURE';
 
-export const GET_MENU_DATA_REQUEST = 'cap/GET_MENU_DATA_REQUEST';
-export const GET_MENU_DATA_SUCCESS = 'cap/GET_MENU_DATA_SUCCESS';
-export const GET_MENU_DATA_FAILURE = 'cap/GET_MENU_DATA_FAILURE';
+export const GET_SIDEBAR_MENU_DATA_REQUEST =
+  'cap/GET_SIDEBAR_MENU_DATA_REQUEST';
+export const GET_SIDEBAR_MENU_DATA_SUCCESS =
+  'cap/GET_SIDEBAR_MENU_DATA_SUCCESS';
+export const GET_SIDEBAR_MENU_DATA_FAILURE =
+  'cap/GET_SIDEBAR_MENU_DATA_FAILURE';
+export const CLEAR_SIDEBAR_MENU_DATA = 'cap/CLEAR_SIDEBAR_MENU_DATA';
+
+export const SIDEBAR_MENU_ITEM_POSITION = 'left';
+export const PRODUCTION = 'production';
+
+export const getSettingsMenuData = () => [
+  {
+    title: <FormattedMessage {...messages.eventNotification} />,
+    key: 'eventNotification',
+    link: `${path.publicPath}`,
+  },
+];

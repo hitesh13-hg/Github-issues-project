@@ -5,23 +5,38 @@
  */
 
 import React from 'react';
+import { intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { CapSideBar } from '@capillarytech/cap-ui-library';
 import styled from 'styled-components';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { isEmpty, forEach } from 'lodash';
+import { loadItem } from 'services/localStorageApi';
+import {
+  CAP_WHITE,
+  CAP_SPACE_64,
+} from '@capillarytech/cap-ui-library/styled/variables';
 import NotFoundPage from '../../containers/NotFoundPage';
 import TopBar from '../TopBar';
+import messages from './messages';
 
 const CapWrapper = styled.div`
-  display: flex;
+  position: absolute;
   padding: 0;
-  background-color: #ffffff;
+  background-color: ${CAP_WHITE};
+  width: 100%;
+  top: ${CAP_SPACE_64};
+  display: flex;
+  height: calc(100vh - 100px);
+  .ant-collapse {
+    background-color: ${CAP_WHITE};
+  }
 `;
 
 const ComponentWrapper = styled.div`
-  max-width: 1140px;
+  max-width: 1180px;
   margin: 0 auto;
+  width: ${props => (props.showSidebar ? 'calc(100% - 240px)' : '100%')};
 `;
 
 const RenderRoute = ({ component: Component, ...rest }) => (
@@ -32,123 +47,99 @@ class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMenuItem: '',
+      selectedSidebarMenuItem: null,
     };
   }
 
-  onSideBarLinkClick = item => {
-    const { history } = this.props;
-    this.setState({ selectedMenuItem: item.key });
-    history.push(item.link, { code: item.key });
+  getDropdownMenu = () => {
+    const { formatMessage } = this.props.intl;
+    return [
+      {
+        label: formatMessage(messages.logout),
+        key: formatMessage(messages.logout),
+        onClickHandler: this.props.logout,
+      },
+    ];
   };
 
-  handleProductChange = (value, option) => {
-    const { match } = this.props;
-    const { path } = match;
-    if (option.url !== `${path}/index`) {
-      window.location.pathname = option.url;
+  handleOrgChange = orgId => {
+    const selectedOrg = loadItem('orgID');
+    if (selectedOrg !== orgId) {
+      this.props.changeOrg(orgId);
     }
   };
 
-  getTopBarData = () => {
+  onSideBarLinkClick = item => {
+    const { history } = this.props;
+    this.setState({ selectedSidebarMenuItem: item.key });
+    history.push(item.link, { code: item.key });
+  };
+
+  getProxyOrgList = () => {
     const { userData } = this.props;
     const proxyOrgList = [];
-    let userName = '';
     if (userData && userData.user && userData.user !== '') {
-      const defaultOrgName = userData.user.orgName;
-      const defaultOrgId = userData.user.orgID;
-      proxyOrgList.push({ label: defaultOrgName, value: defaultOrgId });
+      const { orgName: defaultOrgName, orgID: defaultOrgId } = userData.user;
+      proxyOrgList.push({
+        label: defaultOrgName,
+        value: defaultOrgId,
+        key: defaultOrgId,
+      });
       const orgList = userData.user.proxyOrgList;
       if (!isEmpty(orgList)) {
         forEach(orgList, item => {
           const id = item.orgID;
-          let name = item.orgName;
-          if (id === 486) {
-            name = 'Demo Org';
-          }
+          const name = item.orgName;
           if (id !== defaultOrgId) {
-            proxyOrgList.push({ label: name, value: id });
+            proxyOrgList.push({ label: name, value: id, key: id });
           }
         });
       }
-      userName = userData.user.firstName;
     }
-    return { userName, proxyOrgList };
-  };
-
-  getProductMenuData = () => {
-    const { currentOrgDetails } = this.props.userData;
-    const productMenuData = [];
-    if (currentOrgDetails) {
-      forEach(currentOrgDetails.module_details, module => {
-        productMenuData.push({
-          label: module.name,
-          value: module.name.toLowerCase(),
-          url: module.url,
-        });
-      });
-    }
-    return productMenuData;
-  };
-
-  onSettingsClick = () => {
-    const { settingsUrl } = this.props;
-    if (settingsUrl) {
-      window.location.pathname = settingsUrl;
-    }
-  };
-
-  onTopMenuClick = item => {
-    const { history } = this.props;
-    history.push(item.link, { code: item.key });
+    return proxyOrgList;
   };
 
   render() {
     const {
       componentRoutes,
-      menuData,
-      menuItemsPosition,
-      logout,
-      changeOrg,
+      sidebarMenuData,
+      sidebarMenuItemsPosition,
+      defaultSelectedSidebarMenuItem,
+      intl,
     } = this.props;
-    const { userName, proxyOrgList } = this.getTopBarData();
-    const productMenuData = this.getProductMenuData();
-    const { selectedMenuItem } = this.state;
-    let customTopBarProps = {};
-    if (menuItemsPosition === 'top') {
-      customTopBarProps = {
-        menuProps: {
-          items: menuData,
-          selectedItem: '',
-          onMenuItemClick: this.onTopMenuClick,
-        },
-      };
-    }
+    console.log('Sidebar menudata: ', sidebarMenuData);
+    const proxyOrgList = this.getProxyOrgList();
+    const selectedOrg = loadItem('orgID');
+    const dropdownMenuProps = this.getDropdownMenu();
+    const { selectedSidebarMenuItem } = this.state;
+    const customTopBarProps = {};
     return (
       <React.Fragment>
         <TopBar
           proxyOrgList={proxyOrgList}
-          userName={userName}
-          changeOrg={changeOrg}
-          logout={logout}
-          onSettingsClick={this.onSettingsClick}
-          productMenuData={productMenuData}
-          selectedProduct="campaigns"
-          handleProductChange={this.handleProductChange}
+          selectedOrg={selectedOrg}
+          handleOrgChange={this.handleOrgChange}
+          dropdownMenuProps={dropdownMenuProps}
           {...customTopBarProps}
         />
         <CapWrapper>
-          {menuData.length > 0 && menuItemsPosition === 'left' ? (
+          {sidebarMenuData.length > 0 && sidebarMenuItemsPosition === 'left' ? (
             <CapSideBar
-              sidebarItems={menuData}
+              sidebarItems={sidebarMenuData}
               onLinkClick={this.onSideBarLinkClick}
-              selectedMenuItem={selectedMenuItem}
-              defaultActiveKey=""
+              selectedMenuItem={
+                selectedSidebarMenuItem || defaultSelectedSidebarMenuItem
+              }
+              pageHeading={intl.formatMessage(messages.settingsLabel)}
             />
           ) : (
             ''
           )}
-          <ComponentWrapper>
+          <ComponentWrapper
+            showSidebar={
+              sidebarMenuData.length > 0 && sidebarMenuItemsPosition === 'left'
+            }
+          >
             <Switch>
               {componentRoutes.map(routeProps => (
                 <RenderRoute {...routeProps} key={routeProps.path} />
@@ -170,6 +161,7 @@ NavigationBar.propTypes = {
   logout: PropTypes.func,
   changeOrg: PropTypes.func,
   settingsUrl: PropTypes.string,
+  intl: intlShape.isRequired,
 };
 
-export default withRouter(NavigationBar);
+export default withRouter(injectIntl(NavigationBar));

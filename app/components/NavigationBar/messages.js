@@ -9,8 +9,12 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.components.NavigationBar';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the NavigationBar component!',
+  settingsLabel: {
+    id: `${scope}.settingsLabel`,
+    defaultMessage: 'Tools',
+  },
+  logout: {
+    id: `${scope}.logout`,
+    defaultMessage: 'Logout',
   },
 });

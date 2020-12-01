@@ -6,24 +6,16 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  profile: {
-    id: 'reon.components.TopBar.profile',
-    defaultMessage: 'Profile',
+  selectOrganization: {
+    id: 'app.components.TopBar.brand.selectOrganization',
+    defaultMessage: 'Select Organization',
   },
-  settings: {
-    id: 'reon.components.TopBar.settings',
-    defaultMessage: 'Settings',
+  organization: {
+    id: 'app.components.TopBar.brand.organization',
+    defaultMessage: 'Organization',
   },
-  logout: {
-    id: 'reon.components.TopBar.logout',
-    defaultMessage: 'Logout',
-  },
-  dropdownMessage: {
-    id: 'reon.components.TopBar.brand.dropdown',
-    defaultMessage: 'Select Brand',
-  },
-  hi: {
-    id: 'app.components.TopBar.brand.dropdown',
-    defaultMessage: 'Hi',
+  noResultText: {
+    id: 'app.components.TopBar.brand.noResultText',
+    defaultMessage: 'No results found',
   },
 });

@@ -1,19 +1,5 @@
 import { createSelector } from 'reselect';
 
-/* parsing menu data in format required by topbar */
-function getParsedMenuData(data) {
-  const menuData = [];
-  Object.entries(data).map(([key, value]) => {
-    menuData.push({
-      label: value.name,
-      link: value.url,
-      key,
-      value: key,
-    });
-  });
-  return menuData;
-}
-
 /**
  * Direct selector to the cap state domain
  */
@@ -27,39 +13,13 @@ const selectCap = state => state.get('cap');
 const makeSelectCap = () =>
   createSelector(selectCap, substate => substate.toJS());
 
-const makeSelectOrgDetails = () =>
-  createSelector(selectCap, substate =>
-    substate.get('currentOrgDetails').toJS(),
-  );
-
-const makeSelectLogin = () =>
-  createSelector(selectCap, substate => substate.toJS());
-
-const makeSelectUser = () =>
-  createSelector(selectCap, substate => !!substate.toJS().token);
-
-const isUserLoggedIn = () =>
-  createSelector(selectCap, substate => substate.toJS().isLoggedIn);
-
-const makeSelectUserLoading = () =>
-  createSelector(selectCap, substate => substate.toJS().loadingUser);
-
-const makeSelectMenuData = () =>
+const makeSelectSidebarMenuData = () =>
   createSelector(selectCap, substate => {
-    const menuData = substate.get('menuData').toJS();
+    const sidebarMenuData = substate.get('sidebarMenuData').toJS();
     let parsedMenuData = [];
-    if (menuData.status === 'success' && menuData.data) {
-      parsedMenuData = getParsedMenuData(menuData.data._actions);
+    if (sidebarMenuData.status === 'success' && sidebarMenuData.data) {
+      parsedMenuData = sidebarMenuData.data;
     }
     return parsedMenuData;
   });
-export {
-  selectCap,
-  makeSelectCap,
-  makeSelectUser,
-  makeSelectOrgDetails,
-  makeSelectUserLoading,
-  makeSelectLogin,
-  isUserLoggedIn,
-  makeSelectMenuData,
-};
+export { selectCap, makeSelectCap, makeSelectSidebarMenuData };
