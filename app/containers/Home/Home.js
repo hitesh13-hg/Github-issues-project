@@ -19,6 +19,7 @@ const Home = () => {
   return (
     <div>
       <div className="container" style={{ marginTop: '20px' }}>
+        <h3> Issues of Redcarpet Repository</h3>
         <div style={{ fontSize: '20px', fontFamily: 'sans-serif' }}>
           <IssueOpenedIcon size={20} /> {open} Open issues{' '}
           <CheckIcon size={20} /> {issues.length - open} Closed issues
@@ -37,8 +38,15 @@ const Home = () => {
             {issues.map(issue => (
               <tr key={issue.id}>
                 <th scope="row">{issue.id}</th>
-                <td>{issue.title}</td>
-                <td>{issue.state}</td>
+                <td style={{ fontWeight: 'bold' }}>{issue.title}</td>
+                <td>
+                  {issue.state === 'open' ? (
+                    <IssueOpenedIcon size={15} color="red" />
+                  ) : (
+                    <CheckIcon size={15} color="green" />
+                  )}{' '}
+                  {issue.state}
+                </td>
                 <td>{issue.created_at}</td>
               </tr>
             ))}
