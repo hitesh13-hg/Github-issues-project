@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import { CapButton } from '@capillarytech/cap-ui-library';
+import Pagination from './Pagination';
 const Home = () => {
   // The API URL.
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
   // useState.
   const [issues, setIssues] = useState([]);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
   // useEffect.
   useEffect(() => {
     getUser();
@@ -16,6 +19,12 @@ const Home = () => {
     setIssues(data);
   }
   const open = issues.filter(issue => issue.state === 'open').length;
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = issues.slice(indexOfFirstPost,indexOfLastPost);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <div>
       <div className="container" style={{ marginTop: '20px' }}>
@@ -35,7 +44,7 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {issues.map(issue => (
+            {currentPosts.map(issue => (
               <tr key={issue.id}>
                 <th scope="row">{issue.id}</th>
                 <td style={{ fontWeight: 'bold' }}>{issue.title}</td>
@@ -52,6 +61,11 @@ const Home = () => {
             ))}
           </tbody>
         </table>
+        <Pagination 
+          postsPerPage={postsPerPage}
+          totalPosts = {issues.length}
+          paginate = {paginate}
+        />
       </div>
     </div>
   );
