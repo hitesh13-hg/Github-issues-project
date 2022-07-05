@@ -6,6 +6,7 @@
 
 import React from 'react';
 import Form from 'antd';
+import { CapButton } from '@capillarytech/cap-ui-library';
 // import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
@@ -15,6 +16,7 @@ class CapHocForm extends React.Component {
     return (
       <>
         <Form {...this.props}>{this.props.children}</Form>
+        <CapButton>milind</CapButton>
       </>
     );
   }
