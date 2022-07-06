@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import { CapButton } from '@capillarytech/cap-ui-library';
+import { Link } from 'react-router-dom';
 import Pagination from './Pagination';
 const Home = () => {
   // The API URL.
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
   // useState.
   const [issues, setIssues] = useState([]);
-  const [currentPage,setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(13);
   // useEffect.
   useEffect(() => {
     getUser();
@@ -21,7 +22,7 @@ const Home = () => {
   const open = issues.filter(issue => issue.state === 'open').length;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = issues.slice(indexOfFirstPost,indexOfLastPost);
+  const currentPosts = issues.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -34,7 +35,7 @@ const Home = () => {
           <CheckIcon size={20} /> {issues.length - open} Closed issues
           <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
         </div>
-        <table className="table table-striped">
+        <table className="table table-striped" style={{ marginTop: '20px' }}>
           <thead>
             <tr>
               <th scope="col">Issue Id</th>
@@ -47,7 +48,14 @@ const Home = () => {
             {currentPosts.map(issue => (
               <tr key={issue.id}>
                 <th scope="row">{issue.id}</th>
-                <td style={{ fontWeight: 'bold' }}>{issue.title}</td>
+                <td>
+                  <Link
+                    style={{ fontWeight: 'bold', color: 'black' }}
+                    to={`/issue/${issue.id}`}
+                  >
+                    {issue.title}
+                  </Link>
+                </td>
                 <td>
                   {issue.state === 'open' ? (
                     <IssueOpenedIcon size={15} color="red" />
@@ -61,10 +69,10 @@ const Home = () => {
             ))}
           </tbody>
         </table>
-        <Pagination 
+        <Pagination
           postsPerPage={postsPerPage}
-          totalPosts = {issues.length}
-          paginate = {paginate}
+          totalPosts={issues.length}
+          paginate={paginate}
         />
       </div>
     </div>
