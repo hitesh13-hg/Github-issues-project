@@ -3,6 +3,8 @@ import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import { CapButton } from '@capillarytech/cap-ui-library';
 import { Link } from 'react-router-dom';
 import Pagination from './Pagination';
+import { getIssue, getIssueSuccess, GET_ISSUE,GET_ISSUE_SUCCESS } from '../../actions';
+import { connect } from "react-redux";
 const Home = () => {
   // The API URL.
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
@@ -15,10 +17,14 @@ const Home = () => {
     getUser();
   }, []);
   async function getUser() {
+    //dispatch(getIssue());
     const response = await fetch(APIurl);
     const data = await response.json();
+    //getIssueSuccess(data);
     setIssues(data);
   }
+
+  console.log(issues)
   const open = issues.filter(issue => issue.state === 'open').length;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -78,5 +84,10 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;
+const mapStateToProps = state => {
+  return {
+   issues:state.issues
+  };
+};
+const mapDispatch = {getIssueSuccess,getIssue};
+export default connect(mapStateToProps,mapDispatch)(Home);
