@@ -20,14 +20,14 @@ function Issue(props) {
   return (
     <div className='container'>
       <div style={{ marginTop: '20px', textAlign:'center', backgroundColor:"#ebe8e8"}}>
-        <h3>{`Issue ${id}`}</h3>
+        <h3 style={{paddingTop:"20px"}}>{`Issue #${id}`}</h3>
         {props.issues.filter(issue => issue.id == id).map(issue => (
           <div key={issue.id}>
            {issue.state=="open"?
            <Link to={{ pathname: "https://github.com/vmg/redcarpet/issues" }} target="_blank" ><CapButton>Open Issue</CapButton></Link>
            :<CapButton disabled>Closed Issue</CapButton>}
-            <h3>{issue.title}</h3>
-            <h5>{issue.body}</h5>
+            <h3 style={{marginTop:"20px"}}>{issue.title}</h3>
+            <p style={{padding:"0 50px 20px 50px", fontSize:"20px",fontFamily:"sans-serif"}}>{issue.body}</p><br />
           </div>
         ))}
       </div>

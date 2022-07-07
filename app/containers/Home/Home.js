@@ -85,19 +85,18 @@ const Home = props => {
             <label htmlFor="open" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Open Issues</label><br/>
             <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("closed")} />
             <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Closed Issues</label><br/>
-            <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("reset")} />
-            <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Reset</label>
+            <button className='btn-success' id="closed" name="iss" value={radio} onClick={()=>setRadio("reset")}>Reset All</button>
+
       </div>
       
       <div>
        
         {props.loading ? (
-          <CapSpin
+          <CapSpin 
             style={{
               display: 'table',
               marginLeft: 'auto',
               marginRight: 'auto',
-
             }}
             size = "large"
           >
