@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
-import { CapButton, CapSpin } from '@capillarytech/cap-ui-library';
+import { CapButton, CapSearchBar, CapSideBar, CapSpin } from '@capillarytech/cap-ui-library';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Pagination from './Pagination';
@@ -35,62 +35,68 @@ const Home = props => {
   return (
     <div>
       <div className="container" style={{ marginTop: '20px' }}>
+        
         <h3> Issues of Redcarpet's Repository</h3>
+        <CapSearchBar />
+        {props.loading ? (<CapSpin style={{display:'table',marginLeft: 'auto',marginRight: 'auto'}}/>):
+        <div>
         <div style={{ fontSize: '20px', fontFamily: 'sans-serif' }}>
-          <IssueOpenedIcon size={20} /> {open} Open issues{' '}
-          <CheckIcon size={20} /> {props.issues.length - open} Closed issues
-          <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
-        </div>
+        <IssueOpenedIcon size={20} /> {open} Open issues{' '}
+        <CheckIcon size={20} /> {props.issues.length - open} Closed issues
+        <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
+      </div>
         <table className="table table-striped" style={{ marginTop: '20px' }}>
-          <thead>
-            <tr>
-              <th scope="col">Issue Id</th>
-              <th scope="col">Title</th>
-              <th scope="col">Status</th>
-              <th scope="col">Created at</th>
-            </tr>
-          </thead>
-          <tbody>
-            {props.loading ? (
-              <CapSpin />
-            ) : (
-              currentPosts.map(issue => (
-                <tr key={issue.id}>
-                  <th scope="row">{issue.id}</th>
-                  <td>
-                    <Link
-                      style={{ fontWeight: 'bold', color: 'black' }}
-                      to={`/issue/${issue.id}`}
-                    >
-                      {issue.title}
-                    </Link>
-                  </td>
-                  <td>
-                    {issue.state === 'open' ? (
-                      <IssueOpenedIcon size={15} color="red" />
-                    ) : (
-                      <CheckIcon size={15} color="green" />
-                    )}{' '}
-                    {issue.state}
-                  </td>
-                  <td>{issue.created_at}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-        <Pagination
+        <thead>
+          <tr>
+            <th scope="col">Issue Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Status</th>
+            <th scope="col">Created at</th>
+          </tr>
+        </thead>
+        <tbody>
+          { currentPosts.map(issue => (
+              <tr key={issue.id}>
+                <th scope="row">{issue.id}</th>
+                <td>
+                  <Link
+                    style={{ fontWeight: 'bold', color: 'black' }}
+                    to={`/issue/${issue.id}`}
+                  >
+                    {issue.title}
+                  </Link>
+                </td>
+                <td>
+                  {issue.state === 'open' ? (
+                    <IssueOpenedIcon size={15} color="red" />
+                  ) : (
+                    <CheckIcon size={15} color="green" />
+                  )}{' '}
+                  {issue.state}
+                </td>
+                <td>{issue.created_at}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <Pagination
           postsPerPage={postsPerPage}
           totalPosts={props.issues.length}
           paginate={paginate}
         />
+      </div>
+      
+        }
+        
+        
       </div>
     </div>
   );
 };
 
 const mapStateToProps = state => {
-  console.log(state.get('reducer').issues);
+  //console.log(state.get('reducer').issues);
   return {
     issues: state.get('reducer').issues,
     loading: state.get('reducer').loading,
