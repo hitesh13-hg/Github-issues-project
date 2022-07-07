@@ -1,33 +1,49 @@
 import React, { useState, useEffect } from 'react';
-export default function Issue(props) {
+import { connect } from 'react-redux';
+import {getIssueSuccess} from '../../actions/index';
+
+function Issue(props) {
   const id = props.match.params.id;
 
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
-  const [issues, setIssues] = useState([]);
+
   useEffect(() => {
     getUser();
   }, []);
-
   async function getUser() {
-    const response = await fetch(APIurl);
-    const data = await response.json();
-    setIssues(data);
+    await fetch(APIurl)
+      .then(response => response.json())
+      .then(data => props.handleIssue(data));
   }
 
   return (
     <div>
-      <div className="container">
-        <h2>{`Issue ${id}`}</h2>
-        {
-          issues.filter(issue => issue.id == id).map(issue => {
-            return(
-              <div key = {issue.id}>
-                <h2>{issue.title}</h2>
-                <p>{issue.body}</p>
-              </div>
-          )})
-        }
+      <div style={{ marginTop: '20px' }} className="container">
+        <h3>{`Issue ${id}`}</h3>
+        {props.issues.filter(issue => issue.id == id).map(issue => (
+          <div key={issue.id}>
+            <h3>{issue.title}</h3>
+            <h5>{issue.body}</h5>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
+
+const mapStateToProps = state => {
+  console.log(state.get('reducer').issues);
+  return {
+    issues: state.get('reducer').issues,
+    loading: state.get('reducer').loading,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  handleIssue: data => dispatch(getIssueSuccess(data)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Issue);

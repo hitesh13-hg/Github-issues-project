@@ -27,12 +27,12 @@ import LanguageProvider from 'containers/LanguageProvider';
 import '!file-loader?name=[name].[ext]!./favicon.ico';
 import 'file-loader?name=.htaccess!./.htaccess'; // eslint-disable-line import/extensions
 
-import configureStore from './configureStore';
+//import store from './store';
 import initialState from './initialState';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
-
+import configureStore from './configureStore';
 // Observe loading of Open Sans (to remove roboto, remove the <link> tag in
 // the index.html file and this observer)
 const openSansObserver = new FontFaceObserver('Roboto', {});
