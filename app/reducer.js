@@ -1,6 +1,6 @@
 import { GET_ISSUE, GET_ISSUE_SUCCESS } from './actions';
 const initialState = { issues: [], error: null, loading: false };
-console.log('num', initialState.number);
+
 function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_ISSUE:

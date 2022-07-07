@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import {
   CapButton,
+  CapHeading,
   CapSearchBar,
   CapSideBar,
   CapSpin,
@@ -10,12 +11,12 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Pagination from './Pagination';
 import { getIssue, getIssueSuccess, increment } from '../../actions';
+import { Alert } from 'antd';
 
 const Home = props => {
   // The API URL.
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
   // useState.
-  // const [issues, setIssues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(13);
   // useEffect.
@@ -27,9 +28,9 @@ const Home = props => {
     await fetch(APIurl)
       .then(response => response.json())
       .then(data => props.handleIssue(data));
-    // getIssueSuccess(data);
-    // setIssues(data);
   }
+
+  // for pagination
   const open = props.issues.filter(issue => issue.state === 'open').length;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -40,15 +41,23 @@ const Home = props => {
   return (
     <div>
       <div className="container" style={{ marginTop: '20px' }}>
-        <h3> Issues of Redcarpet's Repository</h3>
+        <CapHeading type = "h1">Issues of Redcarpet's Repository</CapHeading>
         {props.loading ? (
           <CapSpin
             style={{
               display: 'table',
               marginLeft: 'auto',
               marginRight: 'auto',
+              marginTop: 'auto'
             }}
-          />
+            size = "large"
+          >
+             <Alert
+                message="Loading Content"
+                description="Issues are loaded please wait..."
+                type="info"
+              />
+          </CapSpin>
         ) : (
           <div>
             <div style={{ fontSize: '20px', fontFamily: 'sans-serif' }}>
@@ -73,6 +82,7 @@ const Home = props => {
                       <Link
                         style={{ fontWeight: 'bold', color: 'black' }}
                         to={`/issue/${issue.id}`}
+                        target={"_blank"}
                       >
                         {issue.title}
                       </Link>
