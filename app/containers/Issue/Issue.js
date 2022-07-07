@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import {getIssueSuccess} from '../../actions/index';
 
 function Issue(props) {
   const id = props.match.params.id;
