@@ -10,7 +10,6 @@ function Issue(props) {
     getUser();
   }, []);
   async function getUser() {
-    
     await fetch(APIurl)
       .then(response => response.json())
       .then(data => props.handleIssue(data));
@@ -18,15 +17,14 @@ function Issue(props) {
 
   return (
     <div>
-      <div style={{marginTop:'20px'}} className="container">
-        <h3 >{`Issue ${id}`}</h3>
+      <div style={{ marginTop: '20px' }} className="container">
+        <h3>{`Issue ${id}`}</h3>
         {props.issues.filter(issue => issue.id == id).map(issue => (
-          <div key = {issue.id}>
+          <div key={issue.id}>
             <h3>{issue.title}</h3>
             <h5>{issue.body}</h5>
           </div>
-        ))
-        }
+        ))}
       </div>
     </div>
   );
@@ -41,8 +39,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  handleIssue : (data)=> dispatch(getIssueSuccess(data)),
-})
+  handleIssue: data => dispatch(getIssueSuccess(data)),
+});
 
 export default connect(
   mapStateToProps,
