@@ -50,10 +50,24 @@ const Home = props => {
     currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost);
     totalLength = props.issues.length;
   }
-  else if(searchTerm != ""){
-    let searchPosts = props.issues.filter(issue => {
+  
+  if(searchTerm != ""){
+    let searchPosts = [];
+    if(radio == "open"){
+    searchPosts = openIssue.filter(issue => {
      return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
-    })
+      })
+    }
+    else if(radio == "closed"){
+      searchPosts = closedIssue.filter(issue => {
+       return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
+        })
+    }
+    else{
+      searchPosts = props.issues.filter(issue => {
+        return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
+         })
+    }
     currentPosts = searchPosts.slice(indexOfFirstPost, indexOfLastPost);
     totalLength = searchPosts.length;
   }
@@ -82,7 +96,8 @@ const Home = props => {
             style={{
               display: 'table',
               marginLeft: 'auto',
-              marginRight: 'auto'
+              marginRight: 'auto',
+
             }}
             size = "large"
           >
@@ -93,10 +108,11 @@ const Home = props => {
               />
           </CapSpin>
         ) : (
-          <div className='container'>
+          <div>
             <div>
               <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
-              <CapSearchBar style={{width : '20rem',float : 'right'}} onChange={(e)=> setSearchTerm(e.target.value)}/>
+              <CapSearchBar style={{width : '20rem',float : 'right',marginRight : '1rem'}} 
+              onChange={(e)=> setSearchTerm(e.target.value)} placeholder = "Search issues"/>
               </div>
               <div style={{ fontSize: '20px', fontFamily: 'sans-serif'}}>
               <IssueOpenedIcon size={20} /> {open} Open issues{' '}
@@ -133,7 +149,7 @@ const Home = props => {
                       )}{' '}
                       {issue.state}
                     </td>
-                    <td>{issue.created_at}</td>
+                    <td>{new Date(issue.created_at).toLocaleString()}</td>
                   </tr>
                 ))
                 }
