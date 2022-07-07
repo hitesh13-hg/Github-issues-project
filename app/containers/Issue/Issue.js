@@ -1,6 +1,7 @@
 import { CapButton } from '@capillarytech/cap-ui-library';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {getIssueSuccess} from '../../actions/index';
 function Issue(props) {
   const id = props.match.params.id;
@@ -22,7 +23,9 @@ function Issue(props) {
         <h3>{`Issue ${id}`}</h3>
         {props.issues.filter(issue => issue.id == id).map(issue => (
           <div key={issue.id}>
-           {issue.state=="open"?<CapButton>Open Issues</CapButton>:<CapButton disabled>Closed Issue</CapButton>}
+           {issue.state=="open"?
+           <Link to={{ pathname: "https://github.com/vmg/redcarpet/issues" }} target="_blank" ><CapButton>Open Issue</CapButton></Link>
+           :<CapButton disabled>Closed Issue</CapButton>}
             <h3>{issue.title}</h3>
             <h5>{issue.body}</h5>
           </div>
