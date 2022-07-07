@@ -50,10 +50,24 @@ const Home = props => {
     currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost);
     totalLength = props.issues.length;
   }
-  else if(searchTerm != ""){
-    let searchPosts = props.issues.filter(issue => {
+  
+  if(searchTerm != ""){
+    let searchPosts = [];
+    if(radio == "open"){
+    searchPosts = openIssue.filter(issue => {
      return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
-    })
+      })
+    }
+    else if(radio == "closed"){
+      searchPosts = closedIssue.filter(issue => {
+       return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
+        })
+    }
+    else{
+      searchPosts = props.issues.filter(issue => {
+        return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
+         })
+    }
     currentPosts = searchPosts.slice(indexOfFirstPost, indexOfLastPost);
     totalLength = searchPosts.length;
   }
