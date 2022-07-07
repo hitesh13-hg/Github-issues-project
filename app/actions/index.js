@@ -12,4 +12,6 @@ export function getIssueSuccess(data) {
     type: GET_ISSUE_SUCCESS,
     issues: data,
   };
+
+
 }
