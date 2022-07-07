@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import {
-  CapButton,CapHeading,CapLabel,CapSpin,
+  CapButton,CapHeading,CapLabel,CapSearchBar,CapSpin,
 } from '@capillarytech/cap-ui-library';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ const Home = props => {
   const [radio,setRadio]=useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(13);
+  const [searchTerm,setSearchTerm] = useState("");
   // useEffect.
   useEffect(() => {
     getUser();
@@ -35,7 +36,7 @@ const Home = props => {
   const closedIssue=props.issues.filter(issue => issue.state === 'closed')
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  let currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost) ;
+  var currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost) ;
   let totalLength=props.issues.length;
   if (radio=="open"){
     currentPosts=openIssue.slice(indexOfFirstPost, indexOfLastPost);
@@ -45,13 +46,22 @@ const Home = props => {
     currentPosts=closedIssue.slice(indexOfFirstPost, indexOfLastPost);
     totalLength=closedIssue.length;
   }
-  else{
-    props.issues.slice(indexOfFirstPost, indexOfLastPost) 
+  else if(radio == "reset"){
+    currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost);
+    totalLength = props.issues.length;
   }
+  else if(searchTerm != ""){
+    let searchPosts = props.issues.filter(issue => {
+     return(issue.title.toLowerCase().includes(searchTerm.toLowerCase())) 
+    })
+    currentPosts = searchPosts.slice(indexOfFirstPost, indexOfLastPost);
+    totalLength = searchPosts.length;
+  }
+
   const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
-    <div>
-      
+    <div>   
     <CapHeading type = "h1" style={{margin:'20px 0 20px 0',textAlign:'center'}}>Issues of Redcarpet's Repository</CapHeading>
     <div className="container" style={{display:'flex'}}>
       <div style={{marginRight:'30px'}}>
@@ -60,7 +70,9 @@ const Home = props => {
             <input type="radio" id="open" name="iss" value={radio} onChange={()=>setRadio("open")} />
             <label htmlFor="open" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Open Issues</label><br/>
             <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("closed")} />
-            <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Closed Issues</label>
+            <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Closed Issues</label><br/>
+            <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("reset")} />
+            <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Reset</label>
       </div>
       
       <div>
@@ -70,8 +82,7 @@ const Home = props => {
             style={{
               display: 'table',
               marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 'auto'
+              marginRight: 'auto'
             }}
             size = "large"
           >
@@ -82,11 +93,14 @@ const Home = props => {
               />
           </CapSpin>
         ) : (
-          <div>
-            <div style={{ fontSize: '20px', fontFamily: 'sans-serif' }}>
+          <div className='container'>
+            <div>
+              <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
+              <CapSearchBar style={{width : '20rem',float : 'right'}} onChange={(e)=> setSearchTerm(e.target.value)}/>
+              </div>
+              <div style={{ fontSize: '20px', fontFamily: 'sans-serif'}}>
               <IssueOpenedIcon size={20} /> {open} Open issues{' '}
               <CheckIcon size={20} /> {props.issues.length - open} Closed issues
-              <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
             </div>
             
             <table className="table table-striped" style={{ marginTop: '20px' }}>
