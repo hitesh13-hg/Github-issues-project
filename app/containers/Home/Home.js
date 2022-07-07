@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IssueOpenedIcon, CheckIcon } from '@primer/octicons-react';
 import {
-  CapButton,
-  CapHeading,
-  CapSearchBar,
-  CapSideBar,
-  CapSpin,
+  CapButton,CapHeading,CapLabel,CapSpin,
 } from '@capillarytech/cap-ui-library';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -17,6 +13,7 @@ const Home = props => {
   // The API URL.
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
   // useState.
+  const [radio,setRadio]=useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(13);
   // useEffect.
@@ -27,21 +24,47 @@ const Home = props => {
     props.handleLoad();
     await fetch(APIurl)
       .then(response => response.json())
-      .then(data => props.handleIssue(data));
+      .then(data => {
+        props.handleIssue(data)
+      });
   }
 
   // for pagination
-  const open = props.issues.filter(issue => issue.state === 'open').length;
+  const openIssue=props.issues.filter(issue => issue.state === 'open');
+  const open = openIssue.length;
+  const closedIssue=props.issues.filter(issue => issue.state === 'closed')
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = props.issues.slice(indexOfFirstPost, indexOfLastPost);
-
+  let currentPosts=props.issues.slice(indexOfFirstPost, indexOfLastPost) ;
+  let totalLength=props.issues.length;
+  if (radio=="open"){
+    currentPosts=openIssue.slice(indexOfFirstPost, indexOfLastPost);
+    totalLength=open;
+  }
+  else if (radio=="closed"){
+    currentPosts=closedIssue.slice(indexOfFirstPost, indexOfLastPost);
+    totalLength=closedIssue.length;
+  }
+  else{
+    props.issues.slice(indexOfFirstPost, indexOfLastPost) 
+  }
   const paginate = pageNumber => setCurrentPage(pageNumber);
-
   return (
     <div>
-      <div className="container" style={{ marginTop: '20px' }}>
-        <CapHeading type = "h1">Issues of Redcarpet's Repository</CapHeading>
+      
+    <CapHeading type = "h1" style={{margin:'20px 0 20px 0',textAlign:'center'}}>Issues of Redcarpet's Repository</CapHeading>
+    <div className="container" style={{display:'flex'}}>
+      <div style={{marginRight:'30px'}}>
+            <CapHeading type="h3">Filter Issues By:</CapHeading><br />
+            <h6>#Status</h6>
+            <input type="radio" id="open" name="iss" value={radio} onChange={()=>setRadio("open")} />
+            <label htmlFor="open" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Open Issues</label><br/>
+            <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("closed")} />
+            <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Closed Issues</label>
+      </div>
+      
+      <div>
+       
         {props.loading ? (
           <CapSpin
             style={{
@@ -65,6 +88,7 @@ const Home = props => {
               <CheckIcon size={20} /> {props.issues.length - open} Closed issues
               <CapButton style={{ float: 'right' }}>Add Issue</CapButton>
             </div>
+            
             <table className="table table-striped" style={{ marginTop: '20px' }}>
               <thead>
                 <tr>
@@ -103,12 +127,13 @@ const Home = props => {
             </table>
             <Pagination
               postsPerPage={postsPerPage}
-              totalPosts={props.issues.length}
+              totalPosts={totalLength}
               paginate={paginate}
             />
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
