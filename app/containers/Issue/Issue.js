@@ -24,7 +24,7 @@ function Issue(props) {
         {props.issues.filter(issue => issue.id == id).map(issue => (
           <div key={issue.id}>
            {issue.state=="open"?
-           <Link to={{ pathname: "https://github.com/vmg/redcarpet/issues" }} target="_blank" ><CapButton>Open Issue</CapButton></Link>
+           <Link to={{ pathname: `https://github.com/vmg/redcarpet/issues/${issue.number}` }} target="_blank" ><CapButton>Open Issue</CapButton></Link>
            :<CapButton disabled>Closed Issue</CapButton>}
             <h3 style={{marginTop:"20px"}}>{issue.title}</h3>
             <p style={{padding:"0 50px 20px 50px", fontSize:"20px",fontFamily:"sans-serif"}}>{issue.body}</p><br />
@@ -36,7 +36,6 @@ function Issue(props) {
 }
 
 const mapStateToProps = state => {
-  console.log(state.get('reducer').issues);
   return {
     issues: state.get('reducer').issues,
     loading: state.get('reducer').loading,

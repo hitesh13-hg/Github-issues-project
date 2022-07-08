@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <input
+    className="ant-input"
+    name="username"
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Username or Email"
+    type="text"
+    value=""
+  />
+  <input
+    className="ant-input"
+    name="password"
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Password"
+    type="password"
+    value=""
+  />
+  <button
+    className="ant-btn"
+    onClick={[Function]}
+    type="button"
+  >
+    <span>
+      Login
+    </span>
+  </button>
+</div>
+`;
