@@ -64,6 +64,7 @@
     "@bugsnag/plugin-react": "^7.3.3",
     "@capillarytech/cap-ui-library": "^1.0.186",
     "@primer/octicons-react": "^17.3.0",
+    "@testing-library/react": "^12.1.5",
     "antd": "^3.13.2",
     "axios": "^0.18.1",
     "chalk": "^2.4.1",

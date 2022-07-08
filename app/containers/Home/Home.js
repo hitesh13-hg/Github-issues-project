@@ -85,14 +85,19 @@ const Home = props => {
             <label htmlFor="open" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Open Issues</label><br/>
             <input type="radio" id="closed" name="iss" value={radio} onChange={()=>setRadio("closed")} />
             <label htmlFor="closed" style={{fontSize:'16px',marginLeft:'7px',fontFamily:'sans-serif'}}>Closed Issues</label><br/>
-            <button className='btn-success' id="closed" name="iss" value={radio} onClick={()=>setRadio("reset")}>Reset All</button>
-
+            <button className='btn-success' id="reset" name="iss" value={radio} 
+            onClick={()=>
+              {setRadio("reset")
+              document.getElementById("closed").checked = false;
+              document.getElementById("open").checked = false;
+              }
+              }>Reset All</button>
       </div>
       
       <div>
-       
         {props.loading ? (
-          <CapSpin 
+          <div className='container'>
+            <CapSpin 
             style={{
               display: 'table',
               marginLeft: 'auto',
@@ -106,6 +111,8 @@ const Home = props => {
                 type="info"
               />
           </CapSpin>
+          </div>
+          
         ) : (
           <div>
             <div>
