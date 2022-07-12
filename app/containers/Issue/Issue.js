@@ -27,7 +27,7 @@ function Issue(props) {
            <Link to={{ pathname: `https://github.com/vmg/redcarpet/issues/${issue.number}` }} target="_blank" ><CapButton>Open Issue</CapButton></Link>
            :<CapButton disabled>Closed Issue</CapButton>}
             <h3 style={{marginTop:"20px"}}>{issue.title}</h3>
-            <p style={{padding:"0 50px 20px 50px", fontSize:"20px",fontFamily:"sans-serif"}}>{issue.body}</p><br />
+            <p data-testid="issueBody" style={{padding:"0 50px 20px 50px", fontSize:"20px",fontFamily:"sans-serif"}}>{issue.body}</p><br />
           </div>
         ))}
       </div>
