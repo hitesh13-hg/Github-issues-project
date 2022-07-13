@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {getIssueSuccess} from '../../actions/index';
 function Issue(props) {
-  const id = props.match.params.id;
+  const id = props.match.params.id || 1221349943;
 
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
 

@@ -22,9 +22,7 @@ describe("tests for issues home page",()=>{
 
     it('chech for filters',()=>{
          render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
-         //await waitFor(()=>expect(screen.getByText(/open issues/i)).toBeInTheDocument()) 
-         //screen.debug();
-        //expect(await screen.getByText(/17 open issues/i)).toBeInTheDocument()
+         
 
         const labelRadio = screen.getByLabelText('Open Issues');
         fireEvent.click(labelRadio);
@@ -42,13 +40,14 @@ describe("tests for issues home page",()=>{
 
     })
 
-    it('check for async call for table',async()=>{
-        render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
+    it('check for async call for table',()=>{
+        //render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
 
-        // await act(async()=>{
-        //     await render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
-        // })
-        expect(await screen.getByText(/17 open issues/i)).toBeInTheDocument()
+        //await waitFor(()=>expect(screen.getByText(/open issues/i)).toBeInTheDocument()) 
+        act(async ()=>{
+            await render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
+        })
+        expect(screen.getByText(/17 open issues/i)).toBeInTheDocument()
 
     })
 
