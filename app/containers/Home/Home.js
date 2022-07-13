@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import Pagination from './Pagination';
 import { getIssue, getIssueSuccess, increment } from '../../actions';
 import { Alert } from 'antd';
+import axios from 'axios';
 
 const Home = props => {
   // The API URL.
@@ -21,13 +22,17 @@ const Home = props => {
   useEffect(() => {
     getUser();
   }, []);
+
   async function getUser() {
     props.handleLoad();
-    await fetch(APIurl)
-      .then(response => response.json())
-      .then(data => {
-        props.handleIssue(data)
-      });
+    await axios.get(APIurl).then(data =>{
+      props.handleIssue(data.data)
+    })
+    // await fetch(APIurl)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     props.handleIssue(data)
+    //   });
   }
 
   // for pagination
