@@ -57,6 +57,10 @@ describe("tests for issues home page",()=>{
             const labelClosed = screen.getByLabelText('Closed Issues');
             fireEvent.click(labelClosed);
             fireEvent.change(srch,{target: {value: 'how'}}); 
+
+            const page = screen.getByRole('link',{name:/1/i});
+            fireEvent.click(page);
+            expect(page).toBeInTheDocument();
         }) 
        
        done();

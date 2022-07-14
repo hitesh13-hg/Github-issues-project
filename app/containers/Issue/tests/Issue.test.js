@@ -22,8 +22,7 @@ describe("Tests for Issue details Page",()=>{
 
     it('Tests for paragraph component', async (done)=>{
       const id = '1221349943';
-      const idc='1211568412';
-      render(<BrowserRouter history={history}><Provider store={store}><Issue match = {{params :{id}}}/></Provider></BrowserRouter>);
+      render(<BrowserRouter ><Provider store={store}><Issue match = {{params :{id}}}/></Provider></BrowserRouter>);
       expect(screen.getByText(`Issue #${id}`)).toBeInTheDocument();
       await waitFor(()=>{
         expect(screen.getByText(/:autolink option adds non UTF-8 chars when email is next to Japanese text/i)).toBeInTheDocument();
@@ -35,7 +34,7 @@ describe("Tests for Issue details Page",()=>{
 
     it('Tests for paragraph component closed', async (done)=>{
       const id='1211568412';
-      render(<BrowserRouter history={history}><Provider store={store}><Issue match = {{params :{id}}}/></Provider></BrowserRouter>);
+      render(<BrowserRouter ><Provider store={store}><Issue match = {{params :{id}}}/></Provider></BrowserRouter>);
       expect(screen.getByText(`Issue #${id}`)).toBeInTheDocument();
       await waitFor(()=>{
         const b=screen.getByRole("button",{name:/closed issue/i})
