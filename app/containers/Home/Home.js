@@ -28,11 +28,6 @@ const Home = props => {
     await axios.get(APIurl).then(data =>{
       props.handleIssue(data.data)
     })
-    // await fetch(APIurl)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     props.handleIssue(data)
-    //   });
   }
 
   // for pagination
