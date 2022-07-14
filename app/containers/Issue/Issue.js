@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import {getIssueSuccess} from '../../actions/index';
 import axios from 'axios';
 function Issue(props) {
-  const id = props.match.params.id || 1221349943;
+  const id = props.match.params.id;
 
   const APIurl = 'https://api.github.com/repos/vmg/redcarpet/issues?state=all';
 
@@ -18,12 +18,7 @@ function Issue(props) {
       props.handleIssue(data.data)
     })
   }
-  /* async function getUser() {
-    await fetch(APIurl)
-      .then(response => response.json())
-      .then(data => props.handleIssue(data));
-  } */
-
+  
   return (
     <div className='container'>
       <div style={{ marginTop: '20px', textAlign:'center', backgroundColor:"#ebe8e8"}}>
