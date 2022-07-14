@@ -65,4 +65,31 @@ describe("tests for issues home page",()=>{
        
        done();
     })
+
+
+    it('check for integeration test',async(done)=>{
+        render(<BrowserRouter><Provider store={store}><Home /></Provider></BrowserRouter>)
+
+        await waitFor(()=>{
+            expect(screen.getByText(/17 open issues/i)).toBeInTheDocument();
+            expect(screen.getByText(/13 closed issues/i)).toBeInTheDocument();
+            expect(screen.getByPlaceholderText(/search issues/i)).toBeInTheDocument();
+            expect(screen.getByText(/Issue id/i)).toBeInTheDocument();
+            expect(screen.getByText(/title/i)).toBeInTheDocument();
+            expect(screen.getByText("Status")).toBeInTheDocument();
+            expect(screen.getByText(/created at/i)).toBeInTheDocument();
+
+            const linker = screen.getByRole('link',{name: 'gunebicdtte'});
+            fireEvent.click(linker,{ button: 0});
+            expect(screen.getByText(/gunebicdtte/i)).toBeInTheDocument();
+
+            
+            // const b=screen.getByRole("button",{name:/open issue/i})
+            // expect(b).toBeInTheDocument();       
+        })
+
+        done();
+    })
+
+    
 })
