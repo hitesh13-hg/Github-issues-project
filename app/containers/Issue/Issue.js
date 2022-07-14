@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {getIssueSuccess} from '../../actions/index';
+import axios from 'axios';
 function Issue(props) {
   const id = props.match.params.id || 1221349943;
 
@@ -12,10 +13,16 @@ function Issue(props) {
     getUser();
   }, []);
   async function getUser() {
+    //props.handleLoad();
+    await axios.get(APIurl).then(data =>{
+      props.handleIssue(data.data)
+    })
+  }
+  /* async function getUser() {
     await fetch(APIurl)
       .then(response => response.json())
       .then(data => props.handleIssue(data));
-  }
+  } */
 
   return (
     <div className='container'>
